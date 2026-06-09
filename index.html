@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIROSHIMA AI LAB — 何もない場所から、"作れる側"になる。</title>
+<meta name="description" content="広島の大学生の、作る遊び場。AIで、あなたの「ほしい」を形にする。HIROSHIMA AI LAB VOL.01。">
+
+<!-- OGP -->
+<meta property="og:title" content="HIROSHIMA AI LAB — 何もない場所から、&quot;作れる側&quot;になる。">
+<meta property="og:description" content="広島の大学生の、作る遊び場。VOL.01、もうすぐ点灯。">
+<meta property="og:type" content="website">
+
+<!-- Favicon（四芒星の灯） -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+
+<!-- Fonts: Clash Display / General Sans (Fontshare) + Noto Sans JP / Space Mono (Google) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Spline viewer (latest) -->
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.97/build/spline-viewer.js"></script>
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- Lenis（滑らかスクロール） -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+<style>
+  :root{
+    --bg:        #FAF8F5;   /* 地：温白 */
+    --ink:       #14141A;   /* 文字：ほぼ黒 */
+    --ink-soft:  #5A5862;   /* 補助インク */
+    --prism-a:   #7C5CFF;   /* 紫（FVのみ・保護） */
+    --prism-b:   #FF6FB5;   /* ピンク（FVのみ・保護） */
+    --prism-c:   #5CE1E6;   /* 水色（FVのみ・保護） */
+    --ease-out:  cubic-bezier(.16,1,.3,1);
+
+    /* ── FV以外：プリズムの宇宙（FVと同じ色世界＝乖離解消／kaonaviのワクワク＝暗い宇宙に色の光） ── */
+    --space-1:    #15173A;  /* 宇宙の地（深いインディゴ） */
+    --space-2:    #101231;  /* 一段深い宇宙 */
+    --space-3:    #0B0C22;  /* さらに深い */
+    --space-4:    #06060F;  /* 暗転（点灯直前の闇） */
+    --ink2:       #ECEAF8;  /* 文字：宇宙の白 */
+    --ink-soft2:  #A6A2C8;  /* 補助：薄紫グレー */
+    --accent:     #A593FF;  /* 文字アクセント：プリズム紫（暗地で可読・FVと統一） */
+    --line:       rgba(236,234,248,.14);  /* 罫線（白の極薄） */
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  html,body{ height:100%; }
+  html{ background:#0A0B1A; }            /* ★地を宇宙の暗色に（万一canvasが覆い切れなくても白を出さない保険） */
+  body{
+    background:#0A0B1A;                  /* FV以外の地＝暗い宇宙（白余白の根絶） */
+    color:var(--ink);
+    font-family:"Noto Sans JP",system-ui,sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+
+  /* ───────────────── 日本語の改行品質（語の途中分断・数字分断・孤立行を防ぐ） ───────────────── */
+  /* 本文：文節(auto-phrase)で折り返し＋最終行の孤立(pretty)回避＋禁則(strict) */
+  .lead, .foot-meta, .sec-lead, .card p, .step p, .step .note, .join-note p, .eyebrow{
+    line-break:strict;
+    word-break:auto-phrase;
+    text-wrap:pretty;
+  }
+  /* 見出し：行長を均して孤立を防ぐ */
+  .big, .join-title, .card h3, .step h3{
+    line-break:strict;
+    word-break:auto-phrase;
+    text-wrap:balance;
+  }
+  .ph{ display:inline-block; }          /* 文節のまとまり（auto-phrase非対応ブラウザでの補助） */
+  .nb{ white-space:nowrap; }            /* 数字＋助数詞などを分断させない（1つ / VOL.01 等） */
+
+  /* ───────────────────────── HERO ───────────────────────── */
+  .hero{
+    position:relative;
+    width:100%;
+    min-height:100svh;
+    min-height:100vh;
+    overflow:hidden;
+    isolation:isolate;
+    background:var(--bg);   /* ★FVの地は今のまま明るく維持（body暗色化の影響を受けない＝FV無変更） */
+  }
+
+  /* Layer 0: Spline 3D 背景（全画面） */
+  .stage{
+    position:absolute; inset:0;
+    z-index:0;
+    opacity:0;                 /* JSでフェードイン */
+    transform:scale(1.06);
+    transition:opacity 1.4s var(--ease-out), transform 1.8s var(--ease-out);
+  }
+  .stage.is-in{ opacity:1; transform:scale(1); }
+  spline-viewer{ width:100%; height:100%; display:block; }
+
+  /* Layer 0b: フォールバック（WebGL不可/低性能/reduced-motion時の静止メッシュグラデ） */
+  .stage-fallback{
+    position:absolute; inset:0; z-index:0; display:none;
+    background:
+      radial-gradient(60% 55% at 22% 28%, rgba(124,92,255,.30), transparent 60%),
+      radial-gradient(55% 50% at 80% 30%, rgba(255,111,181,.28), transparent 62%),
+      radial-gradient(70% 60% at 55% 85%, rgba(92,225,230,.26), transparent 60%),
+      var(--bg);
+    filter:saturate(1.05);
+  }
+  .stage-fallback::after{   /* ガラスの粒状感をうっすら */
+    content:""; position:absolute; inset:0;
+    background-image:radial-gradient(rgba(20,20,26,.04) 1px, transparent 1.4px);
+    background-size:7px 7px; mix-blend-mode:multiply;
+  }
+  body.use-fallback .stage{ display:none; }
+  body.use-fallback .stage-fallback{ display:block; }
+
+  /* Layer 1: 光のヴェール（地と3Dの間。タイポの可読性を底上げ＋光を滲ませる） */
+  .veil{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 8%,  rgba(250,248,245,.0) 40%, rgba(250,248,245,.55) 100%),
+      radial-gradient(90% 70% at 14% 92%, rgba(250,248,245,.65), transparent 55%);
+  }
+
+  /* Layer 2: コンテンツ（特大タイポ） */
+  .hero-inner{
+    position:relative; z-index:2;
+    width:100%; min-height:100svh; min-height:100vh;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    padding:clamp(20px,3.2vw,42px) clamp(20px,4vw,64px);
+    padding-bottom:max(clamp(20px,3.2vw,42px), env(safe-area-inset-bottom));
+    pointer-events:none;        /* 背景3Dをドラッグ可能に。子の操作要素だけ復帰 */
+  }
+  .hero-inner a,.hero-inner button{ pointer-events:auto; }
+
+  /* ── top bar ── */
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:"Space Mono",monospace; font-size:clamp(10px,1vw,12px);
+    letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  .topbar .brand{ color:var(--ink); font-weight:700; display:inline-flex; align-items:center; gap:.5em; }
+  .brand-mark{ width:1.3em; height:1.3em; object-fit:contain; }
+  .topbar .vol{ display:inline-flex; align-items:center; gap:.6em; }
+  .topbar .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:conic-gradient(from 0deg,var(--prism-a),var(--prism-b),var(--prism-c),var(--prism-a));
+    box-shadow:0 0 10px rgba(124,92,255,.5);
+    animation:spin 6s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  /* ── center headline block ── */
+  .head{
+    align-self:center;
+    max-width:min(96vw,1180px);
+    will-change:transform;
+  }
+  .eyebrow{
+    font-family:"Space Mono",monospace;
+    font-size:clamp(11px,1.15vw,13px);
+    letter-spacing:.24em; text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:clamp(14px,1.8vw,24px);
+    display:flex; align-items:center; gap:.9em;
+  }
+  .eyebrow .rule{
+    height:1px; width:clamp(28px,5vw,72px);
+    background:linear-gradient(90deg,var(--prism-a),var(--prism-b),var(--prism-c));
+  }
+
+  /* 日本語リード（級数中・体温） */
+  .lead{
+    font-family:"Noto Sans JP",sans-serif;
+    font-weight:500;
+    font-size:clamp(18px,2.4vw,30px);
+    line-height:1.55;
+    letter-spacing:.02em;
+    color:var(--ink);
+    margin-bottom:clamp(16px,2.2vw,30px);
+  }
+  .lead b{
+    font-weight:700;
+    position:relative;
+    background:linear-gradient(90deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c));
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  /* 主役：特大欧文タイポ（級数振り切り） */
+  .title{
+    font-family:"Clash Display","General Sans",sans-serif;
+    font-weight:700;
+    font-size:clamp(56px,14vw,200px);
+    line-height:.92;
+    letter-spacing:-.02em;
+    color:var(--ink);
+  }
+  .title .line{ display:block; }      /* クリップなし（マスクで全消えする事故を防ぐ・revealはfade-up） */
+  .title .line > span{ display:block; will-change:transform; }
+  .title .ai{
+    /* 中核ワード AI をプリズム発光に（光は文字にだけ） */
+    display:inline-block;          /* ★Safari: inline要素だと background-clip:text が描画されず透明化する不具合の回避 */
+    color:var(--prism-b);          /* ★bg-clip未適用時のフォールバック色（透明で消えるのを防ぐ） */
+    background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 50%,var(--prism-c));
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  /* ── bottom row ── */
+  .foot{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; flex-wrap:wrap;
+  }
+  .foot-meta{
+    font-family:"Space Mono",monospace;
+    font-size:clamp(10px,1vw,12.5px);
+    letter-spacing:.1em; line-height:1.7; color:var(--ink-soft);
+    max-width:30ch;
+  }
+  .foot-meta .strong{ color:var(--ink); }
+
+  /* CTA：光るボタン */
+  .cta{
+    position:relative;
+    display:inline-flex; align-items:center; gap:.7em;
+    font-family:"General Sans","Noto Sans JP",sans-serif;
+    font-weight:600; font-size:clamp(15px,1.5vw,18px);
+    color:#fff; text-decoration:none;
+    padding:clamp(15px,1.5vw,19px) clamp(26px,2.6vw,38px);
+    border-radius:100px;
+    background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c));
+    background-size:200% 100%;
+    box-shadow:0 8px 30px rgba(124,92,255,.30), 0 2px 8px rgba(255,111,181,.25);
+    overflow:hidden;
+    transition:transform .5s var(--ease-out), box-shadow .5s var(--ease-out), background-position .8s var(--ease-out);
+    isolation:isolate;
+  }
+  .cta:hover{
+    transform:translateY(-3px);
+    background-position:100% 0;
+    box-shadow:0 16px 44px rgba(124,92,255,.42), 0 4px 14px rgba(92,225,230,.30);
+  }
+  .cta .arrow{ transition:transform .5s var(--ease-out); }
+  .cta:hover .arrow{ transform:translateX(5px); }
+  .cta::after{   /* スイープ光 */
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);
+    transform:translateX(-120%);
+  }
+  .cta:hover::after{ transform:translateX(120%); transition:transform .9s var(--ease-out); }
+
+  /* ── scroll cue（疎なモーション・これだけ動かす） ── */
+  .scroll-cue{
+    position:absolute; left:50%; bottom:clamp(18px,2.4vw,30px);
+    transform:translateX(-50%);
+    z-index:3;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--ink-soft);
+    pointer-events:none;
+  }
+  .scroll-cue .track{
+    position:relative; width:1px; height:48px;
+    background:rgba(20,20,26,.16); overflow:hidden;
+  }
+  .scroll-cue .track::after{
+    content:""; position:absolute; left:0; top:0; width:1px; height:40%;
+    background:linear-gradient(180deg,var(--prism-a),var(--prism-c));
+    animation:scrollDrop 2.4s var(--ease-out) infinite;
+  }
+  @keyframes scrollDrop{
+    0%{ transform:translateY(-100%); opacity:0; }
+    25%{ opacity:1; }
+    100%{ transform:translateY(280%); opacity:0; }
+  }
+
+  /* ───────────────── スクロール進捗バー ───────────────── */
+  .scroll-progress{
+    position:fixed; top:0; left:0; height:2px; width:0%;
+    z-index:50; transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c));
+    pointer-events:none;
+  }
+
+  /* ───────────────── セクションIndex（航路点） ───────────────── */
+  .dot-nav{
+    position:fixed; right:clamp(12px,2vw,30px); top:50%; transform:translateY(-50%);
+    z-index:40; display:flex; flex-direction:column; gap:clamp(13px,1.6vw,18px);
+    opacity:0; pointer-events:none; transition:opacity .6s var(--ease-out);
+  }
+  .dot-nav.on{ opacity:1; pointer-events:auto; }
+  .dot-nav a{ display:block; position:relative; padding:5px; }
+  .dn-dot{
+    display:block; width:8px; height:8px; border-radius:50%;
+    background:rgba(236,234,248,.26);
+    transition:transform .4s var(--ease-out), background .4s var(--ease-out), box-shadow .4s var(--ease-out);
+  }
+  .dot-nav a.active .dn-dot{
+    background:var(--accent); transform:scale(1.55);
+    box-shadow:0 0 12px rgba(165,147,255,.7);
+  }
+  .dot-nav a::after{
+    content:attr(data-label); position:absolute; right:26px; top:50%; transform:translateY(-50%);
+    white-space:nowrap; font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.08em;
+    color:var(--ink-soft2); opacity:0; transition:opacity .3s; pointer-events:none;
+  }
+  .dot-nav a:hover::after, .dot-nav a.active::after{ opacity:1; }
+  @media (max-width:760px){ .dot-nav a::after{ display:none; } .dot-nav{ right:10px; } }
+
+  /* ───────────────── セクション共通 ───────────────── */
+  .sec{
+    position:relative; z-index:2;
+    padding:clamp(80px,13vw,180px) clamp(20px,5vw,80px);
+    transition:background-color .6s var(--ease-out);
+  }
+  .sec-meta{
+    font-family:"Space Mono",monospace; font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft2);
+    margin-bottom:clamp(18px,2.4vw,30px);
+    display:inline-flex; align-items:center; gap:.8em;
+  }
+  .sec-meta::before{
+    content:""; width:clamp(18px,3vw,34px); height:1px;
+    background:var(--accent);
+  }
+  .sec-meta.light{ color:rgba(236,234,248,.5); }
+  .big{
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:600;
+    font-size:clamp(30px,5.6vw,72px); line-height:1.14; letter-spacing:-.015em;
+    max-width:16ch; color:var(--ink2);
+  }
+  /* 強調はプリズム1色（紫）。鮮やかな1色で意図を持たせる（虹ベタは使わない） */
+  .big em, .join-title em{
+    font-style:normal; color:var(--accent);
+  }
+  .sec-lead{
+    font-family:"Noto Sans JP",sans-serif; font-weight:500;
+    font-size:clamp(15px,1.7vw,19px); line-height:1.9; color:var(--ink-soft2);
+    margin-top:clamp(22px,3vw,40px); max-width:46ch;
+  }
+  .sec-lead.light{ color:rgba(245,244,240,.7); }
+  .sec-lead b{ color:var(--ink2); font-weight:700; }
+
+  /* 動く背景canvas（FV以外の全面。ゾーン色のベース＋ゆっくり漂う光をcanvasが描く） */
+  .bg-canvas{
+    position:fixed; top:0; left:0; z-index:0; pointer-events:none;
+    width:100vw; height:100vh;          /* ★置換要素の固有サイズに頼らず、表示サイズを明示（右下の白余白対策） */
+    width:100dvw; height:100dvh;
+    display:block;
+    background:#15173A;                /* JS不動時のフォールバック地（宇宙） */
+  }
+
+  /* グレイン（fixed・canvasの上/本文の下。暗い宇宙にうっすら粒状感＝のっぺり回避） */
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.20; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:180px 180px;
+  }
+  @media (prefers-reduced-motion:reduce){ .grain{ opacity:.14; } }
+
+  /* セクションは透明（背景は奥の動く宇宙canvasが受け持つ）。文字は宇宙の白 */
+  [data-zone]{ position:relative; z-index:2; background:transparent; color:var(--ink2); }
+  [data-zone="dark"]{ color:#F5F1EA; }
+
+  /* 03 作例：スマホ実機モック＋テキストの罫線区切りリスト */
+  .cards{
+    margin-top:clamp(40px,6vw,72px);
+    border-top:1px solid var(--line);
+    max-width:880px;
+  }
+  .card{
+    position:relative;
+    display:grid; grid-template-columns:auto 1fr; gap:clamp(20px,4vw,44px);
+    align-items:center;
+    padding:clamp(24px,3.2vw,40px) 0;
+    border-bottom:1px solid var(--line);
+  }
+  .card-shot{
+    width:clamp(92px,12vw,124px); height:auto; display:block;
+    filter:drop-shadow(0 14px 34px rgba(4,5,12,.55));
+  }
+  .card-no{
+    display:block; font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.18em;
+    color:var(--accent); margin-bottom:8px;
+  }
+  .card h3{
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:600;
+    font-size:clamp(20px,2.6vw,30px); margin:0 0 10px; letter-spacing:-.01em; color:var(--ink2);
+  }
+  .card p{ font-size:clamp(14px,1.4vw,16px); line-height:1.85; color:var(--ink-soft2); max-width:42ch; }
+
+  /* 04 ステップ */
+  .steps{
+    list-style:none; margin-top:clamp(40px,6vw,72px);
+    display:grid; gap:clamp(20px,2.6vw,34px); max-width:760px;
+  }
+  .step{
+    display:flex; align-items:flex-start; gap:clamp(18px,2.4vw,32px);
+    padding-bottom:clamp(20px,2.6vw,34px);
+    border-bottom:1px solid var(--line);
+  }
+  .step:last-child{ border-bottom:0; }
+  .step-no{
+    flex:none;
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:700;
+    font-size:clamp(26px,3.4vw,46px); line-height:1; color:var(--accent);
+  }
+  .step h3{
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:600;
+    font-size:clamp(18px,1.9vw,24px); margin-bottom:8px; letter-spacing:-.01em; color:var(--ink2);
+  }
+  .step p{ font-size:clamp(14px,1.4vw,16px); line-height:1.85; color:var(--ink-soft2); }
+  .step .note{ display:block; margin-top:6px; font-size:13px; color:var(--ink-soft2); opacity:.8; }
+
+  /* 05 JOIN（暗転＝点灯の闇。中央一辺倒をやめ左寄せ・グロー無し） */
+  .sec-join{ text-align:left; }
+  .join-title{
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:700;
+    font-size:clamp(44px,9vw,120px); line-height:1.02; letter-spacing:-.02em;
+  }
+  /* 点灯＝魔法の瞬間。プリズムで発光（ここは"意味のある"光なのでグローOK） */
+  .join-title .glow{
+    font-style:normal;
+    background:linear-gradient(100deg,var(--prism-a),var(--prism-b) 50%,var(--prism-c));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    text-shadow:0 0 42px rgba(124,92,255,.45);
+  }
+  .cta-lg{
+    margin-top:clamp(34px,4.4vw,56px);
+    font-size:clamp(16px,1.6vw,19px);
+    padding:clamp(17px,1.7vw,22px) clamp(32px,3vw,46px);
+    /* FVと同じプリズムCTA（色の統一） */
+  }
+  .join-note{
+    margin-top:clamp(40px,6vw,80px); padding-top:clamp(20px,3vw,32px);
+    border-top:1px solid rgba(245,241,234,.14);
+    max-width:52ch; font-size:14px; line-height:1.9; color:rgba(245,241,234,.62);
+  }
+  .join-note b{ color:#F5F1EA; font-weight:700; }
+
+  /* フッター */
+  .site-footer{
+    position:relative; z-index:2;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    padding:clamp(34px,5vw,56px) clamp(20px,5vw,80px);
+    border-top:1px solid rgba(245,241,234,.1);
+    font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:rgba(245,241,234,.5);
+  }
+  .site-footer .ft-brand{ color:#F5F1EA; font-weight:700; }
+
+  /* ───────────────── レスポンシブ（スマホ最優先） ───────────────── */
+  @media (max-width:760px){
+    .hero-inner{ grid-template-rows:auto 1fr auto; padding-left:16px; padding-right:16px; }
+    .head{ align-self:end; margin-bottom:8vh; }
+    /* HIROSHIMA(9字)が画面内に収まる級数：実測 文字幅≈fontSize×5.64 → 15.5vwで端まで安全に収まる */
+    .title{ font-size:clamp(44px,15.5vw,86px); line-height:1.02; letter-spacing:-.025em; }
+    .lead{ font-size:clamp(17px,4.6vw,22px); }
+    .foot{ flex-direction:column; align-items:stretch; gap:18px; }
+    .foot-meta{ max-width:none; order:2; }
+    .cta{ order:1; justify-content:center; width:100%; }
+    .scroll-cue{ display:none; }   /* スマホは下固定CTAと干渉するので消す */
+
+    /* セクション：スマホは縦積み */
+    .sec{ padding-left:20px; padding-right:20px; }
+    .cards{ grid-template-columns:1fr; gap:14px; }
+    .big{ max-width:none; }
+    .step{ gap:16px; }
+    .site-footer{ flex-direction:column; align-items:flex-start; }
+  }
+
+  /* ═══════════ PC専用レイアウト（スマホは一切変更しない＝min-width:761pxのみ） ═══════════ */
+  @media (min-width:761px){
+    /* 全セクションを中央バンドに収める（左貼り付き＆右スカスカの解消） */
+    .sec, .site-footer{
+      padding-left:max(64px, calc((100% - 1180px)/2));
+      padding-right:max(64px, calc((100% - 1180px)/2));
+    }
+
+    /* 01 INTRO：見出し左／リード右の2カラム（横幅を使ってバランス） */
+    .sec-intro{
+      display:grid;
+      grid-template-columns:1.12fr .88fr;
+      grid-template-areas:"meta lead" "head lead";
+      column-gap:clamp(48px,5vw,90px);
+      align-items:start;
+    }
+    .sec-intro .sec-meta{ grid-area:meta; }
+    .sec-intro .big{ grid-area:head; max-width:14ch; }
+    .sec-intro .sec-lead{ grid-area:lead; align-self:center; margin-top:0; max-width:42ch; }
+
+    /* 02 MAKE：カードを2カラム（3枚→2+1の非対称） */
+    .sec-make .cards{
+      display:grid; grid-template-columns:1fr 1fr;
+      column-gap:clamp(40px,4.5vw,72px);
+      border-top:0; max-width:none;
+    }
+    .sec-make .card{ border-top:1px solid var(--line); border-bottom:0; }
+    .sec-make .card:nth-child(3){ margin-left:0; }
+    .sec-make > .sec-lead{ max-width:none; }
+
+    /* 03 HOW：ステップを3カラム（横並びの工程＝バランス良） */
+    .sec-how .steps{
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:clamp(28px,3.4vw,56px); max-width:none;
+    }
+    .sec-how .step{
+      flex-direction:column; align-items:flex-start; gap:14px;
+      border-top:1px solid var(--line); border-bottom:0;
+      padding:clamp(22px,2.4vw,32px) 0 0;
+    }
+
+    /* 04 JOIN：フィナーレは中央寄せ */
+    .sec-join{ text-align:center; }
+    .sec-join .sec-meta{ justify-content:center; }
+    .sec-join .join-title{ max-width:none; }
+    .sec-join .sec-lead, .sec-join .join-note{ margin-left:auto; margin-right:auto; }
+    .sec-join .join-note{ text-align:left; }
+
+    /* FV軽量化：Splineを低解像度で描画→CSSで拡大（per-pixelのglass負荷を軽減）。
+       ★少し大きめ(オーバースキャン)に拡大して右下スキマを確実に潰す（はみ出しは.heroのoverflow:hiddenでクリップ） */
+    .stage spline-viewer{
+      width:62%; height:62%;
+      transform:scale(1.78); transform-origin:0 0;   /* 62%×1.78≒110% → 隙間ゼロ */
+    }
+  }
+
+  /* タッチ端末で背景3Dをスクロールの邪魔にしない */
+  @media (hover:none){
+    .stage{ pointer-events:none; }
+  }
+
+  /* アクセシビリティ：モーション抑制 */
+  @media (prefers-reduced-motion:reduce){
+    .stage,.cta,.cta::after,.scroll-cue .track::after,.topbar .dot{
+      animation:none !important; transition:none !important;
+    }
+  }
+
+  /* 初期状態（JS有効時のみ隠す。no-jsでも見えるように） */
+  .js .title .line > span{ opacity:0; transform:translateY(.28em); }
+  .js .reveal{ opacity:0; transform:translateY(18px); }
+  /* スクロールreveal（ScrollTriggerで出す。JS不調時はフェイルセーフで必ず表示） */
+  .js .reveal-up{ opacity:0; transform:translateY(34px); }
+  @media (prefers-reduced-motion:reduce){
+    .js .reveal-up{ opacity:1 !important; transform:none !important; }
+    .sec{ transition:none; }
+  }
+</style>
+</head>
+
+<body>
+<!-- 動く背景（FV以外。温度のトーナルな地＋灯の淡い揺らぎ） -->
+<canvas class="bg-canvas" id="bgCanvas" aria-hidden="true"></canvas>
+<!-- 紙のグレイン（質感＝人の手。のっぺりAI感の解毒） -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- スクロール進捗バー -->
+<div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+<main class="hero" id="hero">
+
+  <!-- Layer 0: Spline 3D -->
+  <div class="stage" id="stage">
+    <spline-viewer id="spline"
+      url="https://prod.spline.design/jSg3XeQ2X-Alrl3m/scene.splinecode"
+      loading-anim-type="none"></spline-viewer>
+  </div>
+  <!-- Layer 0b: フォールバック -->
+  <div class="stage-fallback" aria-hidden="true"></div>
+
+  <!-- Layer 1: 光のヴェール -->
+  <div class="veil" aria-hidden="true"></div>
+
+  <!-- Layer 2: コンテンツ -->
+  <div class="hero-inner">
+
+    <header class="topbar reveal" data-rv="1">
+      <span class="brand"><img class="brand-mark" src="assets/sparkle.webp" alt="" aria-hidden="true">HIROSHIMA AI LAB</span>
+      <span class="vol"><span class="dot"></span>VOL.01 — 2026</span>
+    </header>
+
+    <div class="head" id="head">
+      <p class="eyebrow reveal" data-rv="2"><span class="rule"></span>広島の大学生の、作る遊び場。</p>
+
+      <p class="lead reveal" data-rv="3">何もない場所から、<br><b>“作れる側”</b> になる。</p>
+
+      <h1 class="title" id="title">
+        <span class="line"><span>HIROSHIMA</span></span>
+        <span class="line"><span><span class="ai">AI</span> LAB</span></span>
+      </h1>
+    </div>
+
+    <div class="foot">
+      <p class="foot-meta reveal" data-rv="4">
+        <span class="strong">AIで、あなたの「ほしい」を形にする。</span><br>
+        相性診断も、推し活ツールも、自分の手で。<br>
+        VOL.01 — 第1回、もうすぐ点灯。
+      </p>
+      <a class="cta reveal" data-rv="5" href="#" id="cta">
+        LINEではじめる <span class="arrow">→</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- scroll cue -->
+  <div class="scroll-cue reveal" data-rv="6" aria-hidden="true">
+    <span>SCROLL</span>
+    <span class="track"></span>
+  </div>
+
+</main>
+
+<!-- ══ 02 これは何か（具体・抽象を排す） ══ -->
+<section class="sec sec-intro" id="intro" data-zone="cream">
+  <p class="sec-meta reveal-up">01 — これは何か</p>
+  <h2 class="big reveal-up"><span class="ph">月に1度集まって、</span><span class="ph"><em>その日のうちに</em>、</span><span class="ph">AIでアプリを<span class="nb">1つ</span>作る。</span></h2>
+  <p class="sec-lead reveal-up">
+    コードは書きません。日本語でAIに話しかけるだけ。広島の大学生のための、小さな部活のような場所です。<br>
+    つくるのは、誰かに売るサービスじゃなくて、<b>自分がほしいもの</b>。
+  </p>
+</section>
+
+<!-- ══ 03 作ったものの例（generic回避・具体例） ══ -->
+<section class="sec sec-make" id="make" data-zone="lavender">
+  <p class="sec-meta reveal-up">02 — 作るもの</p>
+  <h2 class="big reveal-up">たとえば、<em>こんなもの。</em></h2>
+  <div class="cards">
+    <article class="card reveal-up">
+      <img class="card-shot" src="assets/app-aisho.webp" alt="相性診断アプリの画面例" loading="lazy" decoding="async" width="265" height="560">
+      <div class="card-body">
+        <span class="card-no">例 01</span>
+        <h3>友だちとの相性診断</h3>
+        <p>質問も、結果の出し方も自分で決める。作ったらLINEで送って、その場で盛り上がる。</p>
+      </div>
+    </article>
+    <article class="card reveal-up">
+      <img class="card-shot" src="assets/app-oshi.webp" alt="推し活スケジュールアプリの画面例" loading="lazy" decoding="async" width="244" height="560">
+      <div class="card-body">
+        <span class="card-no">例 02</span>
+        <h3>推しのスケジュール管理</h3>
+        <p>ライブ・配信・グッズ発売を1画面に。通知のタイミングも、自分仕様で。</p>
+      </div>
+    </article>
+    <article class="card reveal-up">
+      <img class="card-shot" src="assets/app-baito.webp" alt="バイトの手取り計算アプリの画面例" loading="lazy" decoding="async" width="271" height="560">
+      <div class="card-body">
+        <span class="card-no">例 03</span>
+        <h3>バイトの手取り計算</h3>
+        <p>時給×時間を自動で集計。給料日の前に、手取りが先に見える。</p>
+      </div>
+    </article>
+  </div>
+  <p class="sec-lead reveal-up">むずかしさは、スマホで地図アプリを使うのと、だいたい同じくらいです。</p>
+</section>
+
+<!-- ══ 04 当日の流れ（具体＋正直） ══ -->
+<section class="sec sec-how" id="how" data-zone="mint">
+  <p class="sec-meta reveal-up">03 — 当日の流れ</p>
+  <h2 class="big reveal-up">やることは、<em>3つだけ。</em></h2>
+  <ol class="steps">
+    <li class="step reveal-up">
+      <span class="step-no">01</span>
+      <div><h3>集まる</h3><p>月1回、広島市内に集合。来られない日はオンラインでOK。<span class="note">所要：だいたい3時間</span></p></div>
+    </li>
+    <li class="step reveal-up">
+      <span class="step-no">02</span>
+      <div><h3>つくる</h3><p>その日に作りたいものを決めて、AIと一緒に形にする。<span class="note">コードの経験：いりません</span></p></div>
+    </li>
+    <li class="step reveal-up">
+      <span class="step-no">03</span>
+      <div><h3>見せる</h3><p>最後に、作ったものを順番に見せ合う。<span class="note">完成しなくても大丈夫</span></p></div>
+    </li>
+  </ol>
+</section>
+
+<!-- ══ 05 参加する（暗転＝点灯／正直さ＋主催者の顔） ══ -->
+<section class="sec sec-join" id="join" data-zone="dark">
+  <p class="sec-meta light reveal-up">04 — 参加する</p>
+  <h2 class="join-title reveal-up">VOL.01、<br>もうすぐ<em class="glow">点灯</em>。</h2>
+  <p class="sec-lead light reveal-up">第1回は【日程調整中】。広島の大学生なら、誰でも。<br>まずはLINEで「気になる」とだけ送ってください。</p>
+  <a class="cta cta-lg reveal-up" href="#" id="cta-join">
+    LINEで話を聞く <span class="arrow">→</span>
+  </a>
+  <div class="join-note reveal-up">
+    <p><b>向いていないかも：</b>「作りたいものが決まっていて、すぐ誰かに外注したい」人には、たぶん物足りないです。ここは、自分の手で“作れる側”になりたい人のための場所。</p>
+    <p style="margin-top:1em"><b>主催：</b>【お名前】（広島で◯◯をしています）。「広島の学生こそ、AIで一番おもしろいことができる」と本気で思って、この場を始めました。<span style="opacity:.7"> ※顔写真とプロフィールは後日</span></p>
+  </div>
+</section>
+
+<footer class="site-footer" data-zone="dark">
+  <span class="ft-brand">HIROSHIMA AI LAB</span>
+  <span class="ft-meta">VOL.01 — 2026 ／ 広島の大学生の、作る遊び場。</span>
+</footer>
+
+<!-- セクションIndex（kaonavi式の航路点。FV以外で点灯） -->
+<nav class="dot-nav" id="dotNav" aria-label="セクション">
+  <a href="#intro" data-label="これは何"><span class="dn-dot"></span></a>
+  <a href="#make"  data-label="作るもの"><span class="dn-dot"></span></a>
+  <a href="#how"   data-label="当日の流れ"><span class="dn-dot"></span></a>
+  <a href="#join"  data-label="参加する"><span class="dn-dot"></span></a>
+</nav>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  // ★最優先フェイルセーフ：何が起きても 2.6s でタイトル/UIを必ず最終表示（最初に予約。以降でJSが落ちても発火）
+  setTimeout(function(){
+    try{
+      document.querySelectorAll('.title .line > span').forEach(function(el){ el.style.opacity='1'; el.style.transform='none'; });
+      document.querySelectorAll('.reveal').forEach(function(el){ el.style.opacity='1'; el.style.transform='none'; });
+    }catch(e){}
+  }, 2600);
+
+  /* ─── WebGL / 性能フォールバック判定 ─── */
+  function webglOK(){
+    try{
+      const c=document.createElement('canvas');
+      return !!(window.WebGLRenderingContext &&
+        (c.getContext('webgl')||c.getContext('experimental-webgl')));
+    }catch(e){ return false; }
+  }
+  const useFallback = false;
+
+  if(useFallback){
+    document.body.classList.add('use-fallback');
+  }
+
+  /* ─── 入りのモーション ─── */
+  const gsapReady = typeof gsap !== 'undefined';
+
+  function revealUI(){
+    if(!gsapReady){
+      // GSAPが無くても確実に見せる
+      document.querySelectorAll('.reveal').forEach(el=>{el.style.opacity=1;el.style.transform='none';});
+      document.querySelectorAll('.title .line > span').forEach(el=>{el.style.opacity=1;el.style.transform='none';});
+      return;
+    }
+    const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+
+    // 主役タイトル：fade-up（クリップなし＝消える事故ゼロ）
+    tl.to('.title .line > span', {
+      opacity:1, y:0, duration:1.0, stagger:0.1
+    }, 0.15);
+
+    // 周辺UI：順に fade-up（疎・上品）
+    const order=['[data-rv="1"]','[data-rv="2"]','[data-rv="3"]','[data-rv="4"]','[data-rv="5"]','[data-rv="6"]'];
+    tl.to(order, {
+      opacity:1, y:0, duration:0.9, stagger:0.08
+    }, 0.35);
+  }
+
+  /* ─── Spline フェードイン ─── */
+  const stage = document.getElementById('stage');
+  const spline = document.getElementById('spline');
+
+  if(useFallback){
+    // フォールバック時はUIだけ出す
+    requestAnimationFrame(revealUI);
+  }else{
+    let shown=false;
+    const show=()=>{ if(shown) return; shown=true; stage.classList.add('is-in'); revealUI(); };
+    spline.addEventListener('load', show);
+    // load が来ない/遅い時の保険（最大2.4sでUIは必ず出す）
+    setTimeout(show, 2400);
+  }
+
+
+  /* ─── マウス・パララックス（タイポ層をごく僅か逆視差・Splineと干渉して奥行き） ─── */
+  if(gsapReady && !useFallback && window.matchMedia('(hover:hover)').matches){
+    const head=document.getElementById('head');
+    const qx=gsap.quickTo(head,'x',{duration:0.9,ease:'power3.out'});
+    const qy=gsap.quickTo(head,'y',{duration:0.9,ease:'power3.out'});
+    window.addEventListener('mousemove',(e)=>{
+      const nx=(e.clientX/window.innerWidth-0.5);
+      const ny=(e.clientY/window.innerHeight-0.5);
+      qx(nx*-18); qy(ny*-12);   // 逆視差・±18px / ±12px
+    },{passive:true});
+  }
+
+  /* ════════════ 画面遷移（スクロール演出） ════════════ */
+  (function(){
+    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const stReady = gsapReady && typeof ScrollTrigger !== 'undefined';
+
+    // ★フェイルセーフ：ScrollTrigger不調/reduced-motion なら reveal-up を即表示（消える事故ゼロ）
+    if(!stReady || reduce){
+      document.querySelectorAll('.reveal-up').forEach(function(el){ el.style.opacity='1'; el.style.transform='none'; });
+      // 進捗バーだけはネイティブscrollで動かす
+      if(!reduce){
+        const bar=document.getElementById('progress');
+        addEventListener('scroll',function(){
+          const h=document.documentElement;
+          const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);
+          if(bar) bar.style.width=(p*100)+'%';
+        },{passive:true});
+      }
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── Lenis（滑らかスクロール）。無ければネイティブのまま ──
+    if(typeof Lenis !== 'undefined' && window.matchMedia('(hover:hover)').matches){
+      const lenis = new Lenis({ lerp:0.1, smoothWheel:true, wheelMultiplier:1 });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(time){ lenis.raf(time*1000); });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    // ── セクションが下から立ち上がる（entへ入ったら fade-up・staggerはbatch） ──
+    ScrollTrigger.batch('.reveal-up', {
+      start:'top 86%',
+      onEnter:function(els){
+        gsap.to(els, { opacity:1, y:0, duration:0.95, stagger:0.09, ease:'power3.out', overwrite:true });
+      }
+    });
+
+    // ── ヒーローの受け渡し：Splineパララックス＋コンテンツfade-out ──
+    gsap.to('#stage', {
+      yPercent:16, ease:'none',
+      scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:true }
+    });
+    gsap.to('.hero-inner', {
+      opacity:0, yPercent:-6, ease:'none',
+      scrollTrigger:{ trigger:'#hero', start:'top top', end:'70% top', scrub:true }
+    });
+
+    // ── 上部 進捗バー ──
+    gsap.to('#progress', {
+      width:'100%', ease:'none',
+      scrollTrigger:{ start:0, end:'max', scrub:0.3 }
+    });
+
+    // 画像/フォント読込後にレイアウトずれを補正
+    addEventListener('load', function(){ ScrollTrigger.refresh(); });
+  })();
+
+  /* ════════════ 動く背景：プリズムの宇宙（星＋公転する光＋彗星＝kaonaviのワクワクをH-LABの軸で） ════════════ */
+  (function(){
+    const cv = document.getElementById('bgCanvas');
+    if(!cv) return;
+    const ctx = cv.getContext('2d');
+    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const TAU = Math.PI*2;
+    const PRISM = [[124,92,255],[255,111,181],[92,225,230]];   // 紫/ピンク/水色（FVと統一）
+    // ゾーン＝宇宙の深まり：インディゴ → 深い宇宙 → さらに深く → 暗転（点灯前の闇）
+    const ZC = { cream:[21,23,58], lavender:[16,18,49], mint:[11,12,34], dark:[6,6,15] };
+
+    let W=0,H=0, DPR=Math.min(window.devicePixelRatio||1, 1.5);   // 上限を下げてfill負荷を軽く
+    let stars=[], sys=null, comets=[], stops=[], scrollY=0, raf=0, running=false, t=0;
+    let nebCv=null;   // 星雲を1回だけ焼くオフスクリーン（毎フレームの全画面グラデ塗りを廃止）
+    const stageEl = document.getElementById('stage');
+
+    function resize(){
+      W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
+      buildNebula();
+    }
+    function rnd(){ return Math.random(); }
+
+    // 星雲をオフスクリーンに1回だけ描く（以降はdrawImageで貼るだけ＝激安）
+    function buildNebula(){
+      nebCv = document.createElement('canvas');
+      nebCv.width = Math.max(1, W|0); nebCv.height = Math.max(1, H|0);
+      const nx = nebCv.getContext('2d');
+      const neb=[[W*0.82,H*0.26,PRISM[0]],[W*0.12,H*0.80,PRISM[2]]];
+      for(const n of neb){
+        const g=nx.createRadialGradient(n[0],n[1],0,n[0],n[1],Math.max(W,H)*0.5);
+        const c=n[2];
+        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0.07)');
+        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
+        nx.fillStyle=g; nx.fillRect(0,0,W,H);
+      }
+    }
+
+    function computeStops(){
+      stops = [].slice.call(document.querySelectorAll('[data-zone]')).map(function(el){
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        return { y: top + el.offsetHeight/2, c: ZC[el.dataset.zone] || ZC.cream };
+      }).sort(function(a,b){return a.y-b.y;});
+    }
+    function lerp(a,b,k){ return a+(b-a)*k; }
+    function baseAt(y){
+      if(!stops.length) return ZC.cream;
+      if(y<=stops[0].y) return stops[0].c;
+      const last=stops[stops.length-1];
+      if(y>=last.y) return last.c;
+      for(let i=0;i<stops.length-1;i++){
+        const s=stops[i], e=stops[i+1];
+        if(y>=s.y && y<=e.y){ const k=(y-s.y)/((e.y-s.y)||1);
+          return [lerp(s.c[0],e.c[0],k),lerp(s.c[1],e.c[1],k),lerp(s.c[2],e.c[2],k)]; }
+      }
+      return last.c;
+    }
+
+    function makeField(){
+      const mob = innerWidth<760;
+      // 星（瞬く・パララックス）
+      stars=[]; const N = mob?64:110;
+      for(let i=0;i<N;i++){
+        stars.push({ x:rnd()*W, y:rnd()*H*2, r:rnd()*1.3+0.3, base:0.25+rnd()*0.6,
+          ph:rnd()*TAU, tw:0.4+rnd()*1.0, depth:0.06+rnd()*0.4,
+          col: rnd()<0.28 ? PRISM[(rnd()*3)|0] : [228,230,255] });
+      }
+      // 軌道系（kaonaviの太陽系＝公転する光）
+      const cx = mob? W*0.72 : W*0.80, cy = mob? H*0.20 : H*0.30, bR = mob?64:118;
+      sys = { cx, cy, tilt:-0.46, core:[233,232,255], rings:[
+        { rx:bR*1.0, ry:bR*0.42, a:rnd()*TAU, spd:0.22, col:PRISM[0], dot:mob?3.2:4.4 },
+        { rx:bR*1.75,ry:bR*0.72, a:rnd()*TAU, spd:0.14, col:PRISM[1], dot:mob?2.8:4.0 },
+        { rx:bR*2.5, ry:bR*1.02, a:rnd()*TAU, spd:0.09, col:PRISM[2], dot:mob?2.4:3.6 }
+      ]};
+      // 流れ星（複数・時間差で次々流れる。kokiが一番ハマった要素）
+      comets=[]; const CN = mob?4:6;
+      function newComet(initWait){
+        const spd=(mob?2.2:3.0)*(0.8+rnd()*0.7);
+        const slope=0.26+rnd()*0.22;                 // 流れる角度を1本ごとに変える
+        return { x:-80-rnd()*W*0.4, y:H*(rnd()*0.7-0.05), vx:spd, slope:slope,
+                 len:(mob?80:140)*(0.8+rnd()*0.6), wait:initWait, col:PRISM[(rnd()*3)|0] };
+      }
+      for(let i=0;i<CN;i++){ comets.push(newComet(((rnd()*260)|0))); }   // 開始タイミングをばらす
+      makeField._newComet = newComet;
+    }
+
+    function paintBase(){
+      const base = baseAt(scrollY + H/2);
+      ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='rgb('+(base[0]|0)+','+(base[1]|0)+','+(base[2]|0)+')';
+      ctx.fillRect(0,0,W,H);
+      // 星雲は焼き済みを貼るだけ（毎フレームのグラデ生成・全画面塗り×2を廃止＝大幅軽量化）
+      if(nebCv){
+        ctx.globalCompositeOperation='lighter';
+        ctx.drawImage(nebCv, 0, 0, W, H);
+        ctx.globalCompositeOperation='source-over';
+      }
+    }
+
+    function drawStars(){
+      ctx.globalCompositeOperation='lighter';
+      for(const s of stars){
+        const y = (((s.y - scrollY*s.depth) % (H*2)) + (H*2)) % (H*2);
+        if(y>H+4) continue;
+        const tw = s.base*(0.45+0.55*(0.5+0.5*Math.sin(t*s.tw+s.ph)));
+        const c=s.col;
+        ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+tw.toFixed(3)+')';
+        ctx.beginPath(); ctx.arc(s.x, y, s.r, 0, TAU); ctx.fill();
+      }
+      ctx.globalCompositeOperation='source-over';
+    }
+
+    function drawSystem(){
+      const cx=sys.cx, cy=sys.cy - scrollY*0.05;     // スクロールでわずかに上へ
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(sys.tilt);
+      // 中心の光（恒星）
+      ctx.globalCompositeOperation='lighter';
+      const cg=ctx.createRadialGradient(0,0,0,0,0,innerWidth<760?26:40);
+      cg.addColorStop(0,'rgba(233,232,255,0.5)'); cg.addColorStop(1,'rgba(233,232,255,0)');
+      ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(0,0,innerWidth<760?26:40,0,TAU); ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+      for(const r of sys.rings){
+        // 軌道線（破線・極薄）
+        ctx.strokeStyle='rgba(236,234,248,0.10)'; ctx.lineWidth=1; ctx.setLineDash([2,6]);
+        ctx.beginPath(); ctx.ellipse(0,0,r.rx,r.ry,0,0,TAU); ctx.stroke(); ctx.setLineDash([]);
+        // 公転する光（時間＋スクロールで進む＝scrub感）
+        const a = r.a + t*r.spd + scrollY*0.0010;
+        const px=Math.cos(a)*r.rx, py=Math.sin(a)*r.ry, c=r.col;
+        ctx.globalCompositeOperation='lighter';
+        const g=ctx.createRadialGradient(px,py,0,px,py,r.dot*4);
+        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0.9)');
+        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(px,py,r.dot*4,0,TAU); ctx.fill();
+        ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+',1)';
+        ctx.beginPath(); ctx.arc(px,py,r.dot,0,TAU); ctx.fill();
+        ctx.globalCompositeOperation='source-over';
+      }
+      ctx.restore();
+    }
+
+    function drawComets(){
+      ctx.globalCompositeOperation='lighter';
+      for(let i=0;i<comets.length;i++){
+        const m=comets[i];
+        if(running){
+          if(m.wait>0){ m.wait--; }
+          else {
+            m.x += m.vx; m.y += m.vx*m.slope;
+            if(m.x > W+m.len || m.y > H+m.len){ comets[i]=makeField._newComet(40+((rnd()*240)|0)); continue; }
+          }
+        }
+        if(m.wait>0) continue;
+        const c=m.col, tx=m.x-m.len, ty=m.y-m.len*m.slope;
+        const g=ctx.createLinearGradient(tx,ty,m.x,m.y);
+        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
+        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0.7)');
+        ctx.strokeStyle=g; ctx.lineWidth=2; ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(m.x,m.y); ctx.stroke();
+        ctx.fillStyle='rgba(255,255,255,0.95)';
+        ctx.beginPath(); ctx.arc(m.x,m.y,1.7,0,TAU); ctx.fill();
+      }
+      ctx.globalCompositeOperation='source-over';
+    }
+
+    function render(){ paintBase(); drawStars(); drawSystem(); drawComets(); }
+    function frame(){ t+=0.016; render(); raf=requestAnimationFrame(frame); }
+    function renderStatic(){ render(); }
+
+    function start(){ if(running) return; running=true; frame(); }
+    function stop(){ running=false; cancelAnimationFrame(raf); }
+
+    let stageHidden=null;
+    function onScroll(){
+      scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      const below = scrollY > innerHeight*0.4;
+      // FVをほぼ抜けたらSplineの描画を止める（display:none＝GPUを宇宙canvasに集中）。切替時のみ書き込み
+      if(stageEl){ const hide = scrollY > innerHeight*0.95; if(hide!==stageHidden){ stageHidden=hide; stageEl.style.display = hide?'none':''; } }
+      if(reduce){ if(below) renderStatic(); return; }
+      if(below) start(); else stop();
+    }
+    function setup(){ resize(); computeStops(); makeField(); onScroll(); if(scrollY>innerHeight*0.4) renderStatic(); }
+
+    setup();
+    addEventListener('resize', function(){ resize(); computeStops(); makeField(); if(reduce||!running) renderStatic(); }, {passive:true});
+    addEventListener('scroll', onScroll, {passive:true});
+    addEventListener('load', function(){ computeStops(); onScroll(); });
+    document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else onScroll(); });
+  })();
+
+  /* ════════════ セクションIndex：現在地ハイライト＋FV以外で点灯 ════════════ */
+  (function(){
+    const nav = document.getElementById('dotNav');
+    if(!nav) return;
+    const links = [].slice.call(nav.querySelectorAll('a'));
+    const ids = links.map(function(a){ return a.getAttribute('href').slice(1); });
+    const secs = ids.map(function(id){ return document.getElementById(id); });
+
+    // クリックで該当セクションへ（Lenisがあれば滑らかに）
+    links.forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        const el=document.getElementById(a.getAttribute('href').slice(1));
+        if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
+
+    // セクション位置はキャッシュ（スクロール毎の getBoundingClientRect ＝レイアウト再計算を廃止）
+    let tops=[];
+    function measure(){
+      const sy = window.scrollY || 0;
+      tops = secs.map(function(el){ return el ? el.getBoundingClientRect().top + sy : Infinity; });
+    }
+    let curActive=-1, curOn=null;
+    function update(){
+      const sy = window.scrollY || 0;
+      const on = sy > innerHeight*0.6;
+      if(on!==curOn){ curOn=on; nav.classList.toggle('on', on); }
+      const probe = sy + innerHeight*0.42;
+      let act = 0;
+      for(let i=0;i<tops.length;i++){ if(probe >= tops[i]) act = i; }
+      if(act!==curActive){
+        curActive=act;
+        links.forEach(function(a,i){ a.classList.toggle('active', i===act); });
+      }
+    }
+    addEventListener('scroll', update, {passive:true});
+    addEventListener('resize', function(){ measure(); update(); }, {passive:true});
+    addEventListener('load', function(){ measure(); update(); });
+    measure(); update();
+  })();
+</script>
+</body>
+</html>
