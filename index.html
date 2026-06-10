@@ -23,8 +23,7 @@
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Spline viewer (latest) -->
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.97/build/spline-viewer.js"></script>
+<!-- FV背景：Splineシーンを動画化したもの（見た目同一・WebGL負荷ゼロ・viewer読込なし） -->
 
 <!-- GSAP + ScrollTrigger -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -103,7 +102,7 @@
     transition:opacity 1.4s var(--ease-out), transform 1.8s var(--ease-out);
   }
   .stage.is-in{ opacity:1; transform:scale(1); }
-  spline-viewer{ width:100%; height:100%; display:block; }
+  .stage video{ width:100%; height:100%; object-fit:cover; display:block; }
 
   /* Layer 0b: フォールバック（WebGL不可/低性能/reduced-motion時の静止メッシュグラデ） */
   .stage-fallback{
@@ -160,11 +159,42 @@
   }
   @keyframes spin{ to{ transform:rotate(360deg);} }
 
+  /* ── ヒーロー退場：パステルが宇宙の地へ沈む膜（静止時=完全透明／FV不変） ── */
+  /* veil(1)より上・hero-inner(2)より下。下端だけが宇宙地色#15173Aへ溶ける */
+  .hero{ --heroVeil:0; }          /* 静止時0＝完全に不可視（FVを1pxも変えない） */
+  .hero::after{
+    content:""; position:absolute; left:0; right:0; bottom:0;
+    height:62%;
+    z-index:1;
+    pointer-events:none;
+    /* opacity方式は序盤に接合線が透けるためscaleY方式：下端は常にα1のまま下から伸びる。
+       静止時はscaleY(0)＝高さゼロで完全不可視（FV不変） */
+    transform:scaleY(var(--heroVeil));
+    transform-origin:50% 100%;
+    background:linear-gradient(180deg,
+      rgba(21,23,58,0) 0%,
+      rgba(21,23,58,.45) 55%,
+      rgba(21,23,58,1) 100%);   /* 下端は完全不透明＝宇宙との接合線が常に紺 */
+  }
+  @media (prefers-reduced-motion:reduce){ .hero::after{ display:none; } }
+
   /* ── center headline block ── */
   .head{
     align-self:center;
     max-width:min(96vw,1180px);
     will-change:transform;
+    position:relative;
+  }
+  /* コピー可読性の底上げ：文字ブロックの裏にだけ羽根状の温白光（暗い六角形に文字が溶けるのを防ぐ。
+     縁の見えない楕円フェード＝FVの見た目を変えずにコントラストだけ確保） */
+  .head::before{
+    content:""; position:absolute; z-index:-1;
+    inset:-14% -10% -10% -12%;
+    /* 楕円は箱の内側で必ず透明まで落ち切るサイズにする（縁での矩形カット禁止）。
+       効きはコピー（eyebrow/lead＝左上）周辺に限定し、FVの彩度を殺さない */
+    background:radial-gradient(ellipse 46% 42% at 26% 28%,
+      rgba(250,248,245,.46), rgba(250,248,245,.20) 55%, rgba(250,248,245,0) 100%);
+    pointer-events:none;
   }
   .eyebrow{
     font-family:"Space Mono",monospace;
@@ -502,6 +532,8 @@
     .sec-intro .sec-lead{ grid-area:lead; align-self:center; margin-top:0; max-width:42ch; }
 
     /* 02 MAKE：カードを2カラム（3枚→2+1の非対称） */
+    /* 締めの1行が孤立して下に死に空白が出ていたため、セクション下端を詰める */
+    .sec-make{ padding-bottom:clamp(56px,6vw,90px); }
     .sec-make .cards{
       display:grid; grid-template-columns:1fr 1fr;
       column-gap:clamp(40px,4.5vw,72px);
@@ -529,10 +561,10 @@
     .sec-join .sec-lead, .sec-join .join-note{ margin-left:auto; margin-right:auto; }
     .sec-join .join-note{ text-align:left; }
 
-    /* FV軽量化：Splineを低解像度で描画→CSSで拡大（per-pixelのglass負荷を軽減）。
-       ★少し大きめ(オーバースキャン)に拡大して右下スキマを確実に潰す（はみ出しは.heroのoverflow:hiddenでクリップ） */
-    .stage spline-viewer{
-      width:62%; height:62%;
+    /* FV構図の再現：旧Spline実装はviewerを62%描画→1.78倍CSS拡大で表示していた（＝ズームされた構図）。
+       動画にも同じ変換を適用し、kokiが気に入っている見た目と同一のframingを保つ */
+    .stage video{
+      width:62%; height:62%; object-fit:cover;
       transform:scale(1.78); transform-origin:0 0;   /* 62%×1.78≒110% → 隙間ゼロ */
     }
   }
@@ -572,11 +604,10 @@
 
 <main class="hero" id="hero">
 
-  <!-- Layer 0: Spline 3D -->
+  <!-- Layer 0: FV背景動画（Splineシーンのベイク。PC=横長/SP=縦長をJSで選択） -->
   <div class="stage" id="stage">
-    <spline-viewer id="spline"
-      url="https://prod.spline.design/jSg3XeQ2X-Alrl3m/scene.splinecode"
-      loading-anim-type="none"></spline-viewer>
+    <video id="fvVideo" muted loop playsinline autoplay preload="auto"
+      disablepictureinpicture aria-hidden="true"></video>
   </div>
   <!-- Layer 0b: フォールバック -->
   <div class="stage-fallback" aria-hidden="true"></div>
@@ -763,9 +794,19 @@
     }, 0.35);
   }
 
-  /* ─── Spline フェードイン ─── */
+  /* ─── FV動画のソース選択＋フェードイン ─── */
   const stage = document.getElementById('stage');
-  const spline = document.getElementById('spline');
+  const fvVideo = document.getElementById('fvVideo');
+
+  if(fvVideo){
+    const sp = window.matchMedia('(max-width:760px)').matches;
+    fvVideo.poster = sp ? 'assets/fv-poster-sp.webp' : 'assets/fv-poster-pc.webp';
+    fvVideo.src    = sp ? 'assets/fv-sp.mp4'         : 'assets/fv-pc.mp4';
+    // モーション抑制環境では動かさない（posterの静止画で成立）
+    if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+      fvVideo.autoplay = false; fvVideo.removeAttribute('autoplay');
+    }
+  }
 
   if(useFallback){
     // フォールバック時はUIだけ出す
@@ -773,8 +814,12 @@
   }else{
     let shown=false;
     const show=()=>{ if(shown) return; shown=true; stage.classList.add('is-in'); revealUI(); };
-    spline.addEventListener('load', show);
-    // load が来ない/遅い時の保険（最大2.4sでUIは必ず出す）
+    if(fvVideo){
+      fvVideo.addEventListener('loadeddata', show);
+      // 自動再生がブロックされた環境でも poster で見た目は成立する
+      fvVideo.play && fvVideo.play().catch(function(){});
+    }
+    // 読込が遅い時の保険（最大2.4sでUIは必ず出す）
     setTimeout(show, 2400);
   }
 
@@ -839,6 +884,11 @@
       scrollTrigger:{ trigger:'#hero', start:'top top', end:'70% top', scrub:true }
     });
 
+    // ── ヒーロー退場：パステルが宇宙の地へ沈む（静止時=不可視。FVを抜ける間だけ膜が立ち上がる）──
+    gsap.fromTo('#hero', { '--heroVeil':0 }, {
+      '--heroVeil':1, ease:'none',
+      scrollTrigger:{ trigger:'#hero', start:'top top', end:'50% top', scrub:true }
+    });   /* 早めに膜を完成させ、退場の後半は継ぎ目ゼロで宇宙に渡す */
     // ── 上部 進捗バー ──
     gsap.to('#progress', {
       width:'100%', ease:'none',
@@ -868,6 +918,7 @@
     function resize(){
       W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
       buildNebula();
+      buildHexEchoes();
     }
     function rnd(){ return Math.random(); }
 
@@ -884,6 +935,90 @@
         g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
         nx.fillStyle=g; nx.fillRect(0,0,W,H);
       }
+    }
+
+
+    // ── FVの六角形のエコー：ガラス質の角丸六角形を1回だけオフスクリーンに焼く ──
+    // （毎フレームの path 再構築 / createRadialGradient を禁止。drawImageで貼るだけ＝激安）
+    let hexCv=null, hexes=[];
+    function roundedHexPath(c, R, rad){
+      // 角丸六角形のパス（pointy-top）。radは角の丸み
+      const pts=[];
+      for(let i=0;i<6;i++){ const a=-Math.PI/2 + i*Math.PI/3; pts.push([Math.cos(a)*R, Math.sin(a)*R]); }
+      c.beginPath();
+      for(let i=0;i<6;i++){
+        const p0=pts[i], p1=pts[(i+1)%6], pPrev=pts[(i+5)%6];
+        // p0 へ入る辺と出る辺で角を丸める
+        const v1=[p0[0]-pPrev[0], p0[1]-pPrev[1]];
+        const v2=[p1[0]-p0[0], p1[1]-p0[1]];
+        const l1=Math.hypot(v1[0],v1[1])||1, l2=Math.hypot(v2[0],v2[1])||1;
+        const aIn=[p0[0]-v1[0]/l1*rad, p0[1]-v1[1]/l1*rad];
+        const aOut=[p0[0]+v2[0]/l2*rad, p0[1]+v2[1]/l2*rad];
+        if(i===0) c.moveTo(aIn[0],aIn[1]); else c.lineTo(aIn[0],aIn[1]);
+        c.quadraticCurveTo(p0[0],p0[1], aOut[0],aOut[1]);
+      }
+      c.closePath();
+    }
+    // 1個の六角形タイル（輪郭線＋ごく薄い内側グロー）を1枚のcanvasに焼いて返す
+    function bakeHexTile(size, rgb, alpha){
+      const pad=Math.ceil(size*0.22);
+      const S=Math.ceil(size+pad*2);
+      const tile=document.createElement('canvas'); tile.width=S; tile.height=S;
+      const c=tile.getContext('2d');
+      c.translate(S/2,S/2);
+      const R=size/2;
+      // ごく薄い内側グロー（中心→縁でフェード）
+      const gg=c.createRadialGradient(0,0,0,0,0,R);
+      gg.addColorStop(0,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*0.9).toFixed(3)+')');
+      gg.addColorStop(0.62,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*0.28).toFixed(3)+')');
+      gg.addColorStop(1,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0)');
+      roundedHexPath(c, R*0.93, R*0.20);
+      c.fillStyle=gg; c.fill();
+      // ガラス質の輪郭線（細く・やや明るめ）
+      roundedHexPath(c, R*0.93, R*0.20);
+      c.lineWidth=Math.max(1, size*0.006);
+      c.strokeStyle='rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*1.7).toFixed(3)+')';
+      c.stroke();
+      return tile;
+    }
+    function buildHexEchoes(){
+      const mob = innerWidth<760;
+      const N = mob?2:3;
+      // 配置・色・サイズ・速度を散らす（FVから漂着した数個・主役を邪魔しない位置）
+      const presets = mob
+        ? [ {x:0.18,y:0.30,size:150,col:0,al:0.06,depth:0.16,drift:5,rot:0.012},
+            {x:0.80,y:0.66,size:200,col:2,al:0.05,depth:0.30,drift:7,rot:-0.009} ]
+        : [ {x:0.14,y:0.26,size:200,col:0,al:0.07,depth:0.14,drift:6, rot:0.010},
+            {x:0.83,y:0.40,size:280,col:2,al:0.055,depth:0.26,drift:9, rot:-0.008},
+            {x:0.52,y:0.78,size:150,col:1,al:0.05, depth:0.36,drift:5, rot:0.013} ];
+      const list = presets.slice(0,N);
+      hexes = list.map(function(p){
+        const rgb=PRISM[p.col];
+        return {
+          tile: bakeHexTile(p.size, rgb, p.al),
+          bx:p.x*W, by:p.y*H*2, size:p.size,
+          depth:p.depth, drift:p.drift, rot:p.rot, ph:rnd()*TAU
+        };
+      });
+    }
+    function drawHexEchoes(){
+      if(!hexes.length) return;
+      ctx.globalCompositeOperation='lighter';
+      for(const hx of hexes){
+        // 縦スクロールのパララックス（starsのdepth方式に倣う・宇宙の縦2画面でループ）
+        let y = (((hx.by - scrollY*hx.depth) % (H*2)) + (H*2)) % (H*2);
+        if(y > H + hx.size) continue;
+        // 超低速の漂いと僅かな回転
+        const dx = Math.sin(t*0.05 + hx.ph)*hx.drift;
+        const dy = Math.cos(t*0.04 + hx.ph)*hx.drift*0.7;
+        const ang = Math.sin(t*0.03 + hx.ph)*hx.rot*6;
+        ctx.save();
+        ctx.translate(hx.bx + dx, y + dy);
+        ctx.rotate(ang);
+        ctx.drawImage(hx.tile, -hx.tile.width/2, -hx.tile.height/2);
+        ctx.restore();
+      }
+      ctx.globalCompositeOperation='source-over';
     }
 
     function computeStops(){
@@ -1012,7 +1147,7 @@
       ctx.globalCompositeOperation='source-over';
     }
 
-    function render(){ paintBase(); drawStars(); drawSystem(); drawComets(); }
+    function render(){ paintBase(); drawHexEchoes(); drawStars(); drawSystem(); drawComets(); }
     function frame(){ t+=0.016; render(); raf=requestAnimationFrame(frame); }
     function renderStatic(){ render(); }
 
@@ -1023,8 +1158,9 @@
     function onScroll(){
       scrollY = window.scrollY || document.documentElement.scrollTop || 0;
       const below = scrollY > innerHeight*0.4;
-      // FVをほぼ抜けたらSplineの描画を止める（display:none＝GPUを宇宙canvasに集中）。切替時のみ書き込み
-      if(stageEl){ const hide = scrollY > innerHeight*0.95; if(hide!==stageHidden){ stageHidden=hide; stageEl.style.display = hide?'none':''; } }
+      // FVをほぼ抜けたら背景動画を止める（display:none＋pause＝デコードを宇宙canvasに集中）。切替時のみ書き込み
+      if(stageEl){ const hide = scrollY > innerHeight*0.95; if(hide!==stageHidden){ stageHidden=hide; stageEl.style.display = hide?'none':'';
+        const v=document.getElementById('fvVideo'); if(v){ if(hide){ v.pause(); } else { v.play && v.play().catch(function(){}); } } } }
       if(reduce){ if(below) renderStatic(); return; }
       if(below) start(); else stop();
     }
