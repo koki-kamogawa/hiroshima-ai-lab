@@ -190,10 +190,10 @@
   .head::before{
     content:""; position:absolute; z-index:-1;
     inset:-14% -10% -10% -12%;
-    /* 楕円は箱の内側で必ず透明まで落ち切るサイズにする（縁での矩形カット禁止）。
-       効きはコピー（eyebrow/lead＝左上）周辺に限定し、FVの彩度を殺さない */
-    background:radial-gradient(ellipse 46% 42% at 26% 28%,
-      rgba(250,248,245,.46), rgba(250,248,245,.20) 55%, rgba(250,248,245,0) 100%);
+    /* 楕円の半径＝中心から各辺までの最短距離に一致させ、全ての縁でα=0に落ち切らせる
+       （中心38%/34%・半径38%/34%→左・上辺でちょうど0。縁の段差を構造的に排除） */
+    background:radial-gradient(ellipse 38% 34% at 38% 34%,
+      rgba(250,248,245,.48), rgba(250,248,245,.22) 55%, rgba(250,248,245,0) 100%);
     pointer-events:none;
   }
   .eyebrow{
@@ -502,6 +502,7 @@
     .foot-meta{ max-width:none; order:2; }
     .cta{ order:1; justify-content:center; width:100%; }
     .scroll-cue{ display:none; }   /* スマホは下固定CTAと干渉するので消す */
+    .head::before{ display:none; } /* スマホのコピーは白文字＝白スクリムは逆効果。素のFVに戻す */
 
     /* セクション：スマホは縦積み */
     .sec{ padding-left:20px; padding-right:20px; }
