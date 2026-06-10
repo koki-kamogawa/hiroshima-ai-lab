@@ -1,0 +1,7 @@
+{
+  "count": 0,
+  "universities": [],
+  "stats": [],
+  "updated": "2026-06-10",
+  "note": "countはLINE公式アカウントの友だち数と夜間自動同期（.claude/tools/fetch-line-members.js）。count=0の間はMEMBERSセクション非表示"
+}

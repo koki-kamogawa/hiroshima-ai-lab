@@ -41,23 +41,22 @@
     --prism-c:   #5CE1E6;   /* 水色（FVのみ・保護） */
     --ease-out:  cubic-bezier(.16,1,.3,1);
 
-    /* ── FV以外：プリズムの宇宙（FVと同じ色世界＝乖離解消／kaonaviのワクワク＝暗い宇宙に色の光） ── */
-    --space-1:    #15173A;  /* 宇宙の地（深いインディゴ） */
-    --space-2:    #101231;  /* 一段深い宇宙 */
-    --space-3:    #0B0C22;  /* さらに深い */
-    --space-4:    #06060F;  /* 暗転（点灯直前の闇） */
-    --ink2:       #ECEAF8;  /* 文字：宇宙の白 */
-    --ink-soft2:  #A6A2C8;  /* 補助：薄紫グレー */
-    --accent:     #A593FF;  /* 文字アクセント：プリズム紫（暗地で可読・FVと統一） */
-    --line:       rgba(236,234,248,.14);  /* 罫線（白の極薄） */
+    /* ── FV以外：白い実験室の朝の光（クリーン刷新 2026-06-10・design-spec-clean.md）──
+       温白#FAF8F5＝FVの--bgと完全一致。地続きの核。プリズムは線・番号・CTAのみ（面で使わない） */
+    --bg2:        #F4F1EB;  /* 地・沈み（最終セクションの僅かな特別感のみ） */
+    --ink2:       #14141A;  /* 文字・主（FVの--inkと一致） */
+    --ink-soft2:  #5A5862;  /* 文字・補助（FVの--ink-softと一致） */
+    --ink-meta:   #8C8995;  /* 文字・微（mono番号・メタ） */
+    --accent:     #7C5CFF;  /* 文字アクセント：プリズム紫（明地で可読） */
+    --line:       rgba(20,20,26,.10);  /* 罫線（黒の極薄） */
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
   html{ -webkit-text-size-adjust:100%; }
   html,body{ height:100%; }
-  html{ background:#0A0B1A; }            /* ★地を宇宙の暗色に（万一canvasが覆い切れなくても白を出さない保険） */
+  html{ background:#FAF8F5; }            /* 全編温白＝FVと同じ紙（クリーン刷新） */
   body{
-    background:#0A0B1A;                  /* FV以外の地＝暗い宇宙（白余白の根絶） */
+    background:#FAF8F5;                  /* FV以外の地＝白い実験室。FVと地続き */
     color:var(--ink);
     font-family:"Noto Sans JP",system-ui,sans-serif;
     overflow-x:hidden;
@@ -159,24 +158,7 @@
   }
   @keyframes spin{ to{ transform:rotate(360deg);} }
 
-  /* ── ヒーロー退場：パステルが宇宙の地へ沈む膜（静止時=完全透明／FV不変） ── */
-  /* veil(1)より上・hero-inner(2)より下。下端だけが宇宙地色#15173Aへ溶ける */
-  .hero{ --heroVeil:0; }          /* 静止時0＝完全に不可視（FVを1pxも変えない） */
-  .hero::after{
-    content:""; position:absolute; left:0; right:0; bottom:0;
-    height:62%;
-    z-index:1;
-    pointer-events:none;
-    /* opacity方式は序盤に接合線が透けるためscaleY方式：下端は常にα1のまま下から伸びる。
-       静止時はscaleY(0)＝高さゼロで完全不可視（FV不変） */
-    transform:scaleY(var(--heroVeil));
-    transform-origin:50% 100%;
-    background:linear-gradient(180deg,
-      rgba(21,23,58,0) 0%,
-      rgba(21,23,58,.45) 55%,
-      rgba(21,23,58,1) 100%);   /* 下端は完全不透明＝宇宙との接合線が常に紺 */
-  }
-  @media (prefers-reduced-motion:reduce){ .hero::after{ display:none; } }
+  /* （旧・紺へ沈む膜はクリーン刷新で撤去：温白→温白のフェードゼロ地続き縫合のため不要） */
 
   /* ── center headline block ── */
   .head{
@@ -333,12 +315,12 @@
   .dot-nav a{ display:block; position:relative; padding:5px; }
   .dn-dot{
     display:block; width:8px; height:8px; border-radius:50%;
-    background:rgba(236,234,248,.26);
+    background:rgba(20,20,26,.20);   /* 温白地用の航路点 */
     transition:transform .4s var(--ease-out), background .4s var(--ease-out), box-shadow .4s var(--ease-out);
   }
   .dot-nav a.active .dn-dot{
     background:var(--accent); transform:scale(1.55);
-    box-shadow:0 0 12px rgba(165,147,255,.7);
+    box-shadow:0 0 10px rgba(124,92,255,.35);   /* 白地用に発光を弱める */
   }
   .dot-nav a::after{
     content:attr(data-label); position:absolute; right:26px; top:50%; transform:translateY(-50%);
@@ -356,7 +338,7 @@
   }
   .sec-meta{
     font-family:"Space Mono",monospace; font-size:clamp(11px,1.1vw,13px);
-    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft2);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-meta);
     margin-bottom:clamp(18px,2.4vw,30px);
     display:inline-flex; align-items:center; gap:.8em;
   }
@@ -364,10 +346,10 @@
     content:""; width:clamp(18px,3vw,34px); height:1px;
     background:var(--accent);
   }
-  .sec-meta.light{ color:rgba(236,234,248,.5); }
+  .sec-meta.light{ color:var(--ink-meta); }
   .big{
     font-family:"Clash Display","General Sans",sans-serif; font-weight:600;
-    font-size:clamp(30px,5.6vw,72px); line-height:1.14; letter-spacing:-.015em;
+    font-size:clamp(32px,6.5vw,84px); line-height:1.10; letter-spacing:-.02em;  /* 級数振り切り（spec§3） */
     max-width:16ch; color:var(--ink2);
   }
   /* 強調はプリズム1色（紫）。鮮やかな1色で意図を持たせる（虹ベタは使わない） */
@@ -379,30 +361,74 @@
     font-size:clamp(15px,1.7vw,19px); line-height:1.9; color:var(--ink-soft2);
     margin-top:clamp(22px,3vw,40px); max-width:46ch;
   }
-  .sec-lead.light{ color:rgba(245,244,240,.7); }
+  .sec-lead.light{ color:var(--ink-soft2); }
   .sec-lead b{ color:var(--ink2); font-weight:700; }
 
-  /* 動く背景canvas（FV以外の全面。ゾーン色のベース＋ゆっくり漂う光をcanvasが描く） */
-  .bg-canvas{
-    position:fixed; top:0; left:0; z-index:0; pointer-events:none;
-    width:100vw; height:100vh;          /* ★置換要素の固有サイズに頼らず、表示サイズを明示（右下の白余白対策） */
-    width:100dvw; height:100dvh;
-    display:block;
-    background:#15173A;                /* JS不動時のフォールバック地（宇宙） */
-  }
+  /* （旧・宇宙canvasはクリーン刷新で全撤去。地はbodyの温白が受け持つ） */
 
-  /* グレイン（fixed・canvasの上/本文の下。暗い宇宙にうっすら粒状感＝のっぺり回避） */
+  /* グレイン（fixed・本文の下。温白にうっすら粒状感＝手の質感・AI臭解毒） */
   .grain{
     position:fixed; inset:0; z-index:1; pointer-events:none;
-    opacity:.20; mix-blend-mode:overlay;
+    opacity:.14; mix-blend-mode:multiply;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size:180px 180px;
   }
   @media (prefers-reduced-motion:reduce){ .grain{ opacity:.14; } }
 
-  /* セクションは透明（背景は奥の動く宇宙canvasが受け持つ）。文字は宇宙の白 */
+  /* セクションは透明（地はbodyの温白）。文字は黒インク */
   [data-zone]{ position:relative; z-index:2; background:transparent; color:var(--ink2); }
-  [data-zone="dark"]{ color:#F5F1EA; }
+  /* 最終セクションだけ僅かに沈めて特別感（暗転はしない・差4%以内） */
+  .sec-join{ background:var(--bg2); }
+
+  /* 00 MEMBERS（新設・社会的証明の主役。実数到着までは hidden＝members.jsonのcount>0で点灯） */
+  .sec-members[hidden]{ display:none; }
+  .mem-grid{ display:grid; gap:clamp(28px,4vw,56px); }
+  .mem-count{
+    display:flex; align-items:baseline; gap:.12em;
+    font-family:"Clash Display","General Sans",sans-serif; font-weight:700;
+    color:var(--ink2); line-height:.9; letter-spacing:-.03em;
+  }
+  .mem-num{ font-size:clamp(96px,17vw,220px); font-variant-numeric:tabular-nums; }
+  .mem-unit{
+    font-family:"Noto Sans JP",sans-serif; font-weight:700;
+    font-size:clamp(20px,2.4vw,32px); color:var(--ink-soft2);
+  }
+  .mem-count{ position:relative; }
+  .mem-count::before{   /* FVから漂着した六角形1個（線のみ・面は塗らない＝一刺し）。数字に僅かに重ねる */
+    content:""; position:absolute; left:34%; top:-30%;
+    width:clamp(120px,16vw,210px); aspect-ratio:1;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4 L89 27 L89 73 L50 96 L11 73 L11 27 Z' fill='none' stroke='%237C5CFF' stroke-opacity='.16' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;
+    pointer-events:none;
+  }
+  .mem-lead{
+    margin-top:clamp(14px,1.8vw,22px);
+    font-family:"Noto Sans JP",sans-serif; font-weight:500;
+    font-size:clamp(15px,1.7vw,19px); line-height:1.9; color:var(--ink-soft2);
+  }
+  .mem-univ{ display:flex; flex-wrap:wrap; gap:10px 10px; align-content:start; }
+  .mem-chip{
+    display:inline-flex; align-items:center; gap:.5em;
+    padding:9px 16px; border:1px solid rgba(20,20,26,.12); border-radius:100px;
+    font-family:"Noto Sans JP",sans-serif; font-size:clamp(12px,1.2vw,14px);
+    color:var(--ink-soft2); background:transparent;
+  }
+  .mem-chip::before{ content:""; width:6px; height:6px; border-radius:50%;
+    background:linear-gradient(120deg,var(--prism-a),var(--prism-b),var(--prism-c)); }
+  .mem-stats{
+    margin-top:clamp(28px,4vw,48px); padding-top:clamp(16px,2vw,24px);
+    border-top:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:clamp(18px,4vw,56px);
+    font-family:"Space Mono",monospace; font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.14em; text-transform:uppercase; color:var(--ink-meta);
+  }
+  .mem-stats b{ color:var(--ink2); font-weight:700; }
+  @media (min-width:761px){
+    .mem-grid{ grid-template-columns:1.25fr .75fr; align-items:center; }
+  }
+  @media (max-width:760px){
+    .mem-num{ font-size:clamp(80px,30vw,140px); }
+    .mem-count::before{ display:none; }   /* SPは六角形省略（spec§3） */
+  }
 
   /* 03 作例：スマホ実機モック＋テキストの罫線区切りリスト */
   .cards{
@@ -419,7 +445,7 @@
   }
   .card-shot{
     width:clamp(92px,12vw,124px); height:auto; display:block;
-    filter:drop-shadow(0 14px 34px rgba(4,5,12,.55));
+    filter:drop-shadow(0 12px 28px rgba(20,20,26,.12));   /* 白地用の軽い影（黒すぎる影は安っぽい） */
   }
   .card-no{
     display:block; font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.18em;
@@ -460,12 +486,13 @@
     font-family:"Clash Display","General Sans",sans-serif; font-weight:700;
     font-size:clamp(44px,9vw,120px); line-height:1.02; letter-spacing:-.02em;
   }
-  /* 点灯＝魔法の瞬間。プリズムで発光（ここは"意味のある"光なのでグローOK） */
+  /* 点灯＝魔法の瞬間。白地では発光が映えないため、光は「滲み」でなく「色そのもの」で（FVの.aiと同じ手法） */
   .join-title .glow{
     font-style:normal;
-    background:linear-gradient(100deg,var(--prism-a),var(--prism-b) 50%,var(--prism-c));
+    display:inline-block; color:var(--prism-b);   /* Safari bg-clip対策＋フォールバック（FV .aiと同様） */
+    /* 文字塗りのシアンだけ一段沈める（#5CE1E6は温白地で対比1.3:1→可読性ディップ。visual-critic指摘） */
+    background:linear-gradient(100deg,var(--prism-a),var(--prism-b) 50%,#3FAEBE);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-    text-shadow:0 0 42px rgba(124,92,255,.45);
   }
   .cta-lg{
     margin-top:clamp(34px,4.4vw,56px);
@@ -475,21 +502,21 @@
   }
   .join-note{
     margin-top:clamp(40px,6vw,80px); padding-top:clamp(20px,3vw,32px);
-    border-top:1px solid rgba(245,241,234,.14);
-    max-width:52ch; font-size:14px; line-height:1.9; color:rgba(245,241,234,.62);
+    border-top:1px solid var(--line);
+    max-width:52ch; font-size:14px; line-height:1.9; color:var(--ink-soft2);
   }
-  .join-note b{ color:#F5F1EA; font-weight:700; }
+  .join-note b{ color:var(--ink2); font-weight:700; }
 
   /* フッター */
   .site-footer{
     position:relative; z-index:2;
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
     padding:clamp(34px,5vw,56px) clamp(20px,5vw,80px);
-    border-top:1px solid rgba(245,241,234,.1);
+    border-top:1px solid var(--line);
     font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.16em;
-    text-transform:uppercase; color:rgba(245,241,234,.5);
+    text-transform:uppercase; color:var(--ink-meta);
   }
-  .site-footer .ft-brand{ color:#F5F1EA; font-weight:700; }
+  .site-footer .ft-brand{ color:var(--ink2); font-weight:700; }
 
   /* ───────────────── レスポンシブ（スマホ最優先） ───────────────── */
   @media (max-width:760px){
@@ -529,7 +556,10 @@
       align-items:start;
     }
     .sec-intro .sec-meta{ grid-area:meta; }
-    .sec-intro .big{ grid-area:head; max-width:14ch; }
+    .sec-intro .big{
+      grid-area:head; max-width:14ch;
+      font-size:clamp(32px,5.6vw,72px); line-height:1.14;   /* 2カラム幅では84pxだと行がバラける（実機確認） */
+    }
     .sec-intro .sec-lead{ grid-area:lead; align-self:center; margin-top:0; max-width:42ch; }
 
     /* 02 MAKE：カードを2カラム（3枚→2+1の非対称） */
@@ -595,8 +625,6 @@
 </head>
 
 <body>
-<!-- 動く背景（FV以外。温度のトーナルな地＋灯の淡い揺らぎ） -->
-<canvas class="bg-canvas" id="bgCanvas" aria-hidden="true"></canvas>
 <!-- 紙のグレイン（質感＝人の手。のっぺりAI感の解毒） -->
 <div class="grain" aria-hidden="true"></div>
 
@@ -655,6 +683,19 @@
   </div>
 
 </main>
+
+<!-- ══ 00 MEMBERS（社会的証明・members.jsonのcount>0で点灯） ══ -->
+<section class="sec sec-members" id="members" data-zone="cream" hidden>
+  <p class="sec-meta reveal-up">00 — いま、ここにいる人</p>
+  <div class="mem-grid">
+    <div class="mem-main reveal-up">
+      <div class="mem-count"><span class="mem-num" id="memNum">0</span><span class="mem-unit">名</span></div>
+      <p class="mem-lead"><span class="ph">広島の大学生が、</span><span class="ph">もう動き出している。</span></p>
+    </div>
+    <div class="mem-univ reveal-up" id="memUniv" hidden></div>
+  </div>
+  <div class="mem-stats reveal-up" id="memStats" hidden></div>
+</section>
 
 <!-- ══ 02 これは何か（具体・抽象を排す） ══ -->
 <section class="sec sec-intro" id="intro" data-zone="cream">
@@ -740,6 +781,7 @@
 
 <!-- セクションIndex（kaonavi式の航路点。FV以外で点灯） -->
 <nav class="dot-nav" id="dotNav" aria-label="セクション">
+  <a href="#members" data-label="メンバー" id="dnMembers" hidden><span class="dn-dot"></span></a>
   <a href="#intro" data-label="これは何"><span class="dn-dot"></span></a>
   <a href="#make"  data-label="作るもの"><span class="dn-dot"></span></a>
   <a href="#how"   data-label="当日の流れ"><span class="dn-dot"></span></a>
@@ -885,11 +927,7 @@
       scrollTrigger:{ trigger:'#hero', start:'top top', end:'70% top', scrub:true }
     });
 
-    // ── ヒーロー退場：パステルが宇宙の地へ沈む（静止時=不可視。FVを抜ける間だけ膜が立ち上がる）──
-    gsap.fromTo('#hero', { '--heroVeil':0 }, {
-      '--heroVeil':1, ease:'none',
-      scrollTrigger:{ trigger:'#hero', start:'top top', end:'50% top', scrub:true }
-    });   /* 早めに膜を完成させ、退場の後半は継ぎ目ゼロで宇宙に渡す */
+    // （旧・紺へ沈む膜scrubはクリーン刷新で撤去：温白→温白の地続き）
     // ── 上部 進捗バー ──
     gsap.to('#progress', {
       width:'100%', ease:'none',
@@ -900,278 +938,27 @@
     addEventListener('load', function(){ ScrollTrigger.refresh(); });
   })();
 
-  /* ════════════ 動く背景：プリズムの宇宙（星＋公転する光＋彗星＝kaonaviのワクワクをH-LABの軸で） ════════════ */
+  /* ════════════ FV退場後の省電力（旧・宇宙canvas IIFEから機能だけ温存） ════════════ */
   (function(){
-    const cv = document.getElementById('bgCanvas');
-    if(!cv) return;
-    const ctx = cv.getContext('2d');
-    const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    const TAU = Math.PI*2;
-    const PRISM = [[124,92,255],[255,111,181],[92,225,230]];   // 紫/ピンク/水色（FVと統一）
-    // ゾーン＝宇宙の深まり：インディゴ → 深い宇宙 → さらに深く → 暗転（点灯前の闇）
-    const ZC = { cream:[21,23,58], lavender:[16,18,49], mint:[11,12,34], dark:[6,6,15] };
-
-    let W=0,H=0, DPR=Math.min(window.devicePixelRatio||1, 1.5);   // 上限を下げてfill負荷を軽く
-    let stars=[], sys=null, comets=[], stops=[], scrollY=0, raf=0, running=false, t=0;
-    let nebCv=null;   // 星雲を1回だけ焼くオフスクリーン（毎フレームの全画面グラデ塗りを廃止）
     const stageEl = document.getElementById('stage');
-
-    function resize(){
-      W=innerWidth; H=innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
-      buildNebula();
-      buildHexEchoes();
-    }
-    function rnd(){ return Math.random(); }
-
-    // 星雲をオフスクリーンに1回だけ描く（以降はdrawImageで貼るだけ＝激安）
-    function buildNebula(){
-      nebCv = document.createElement('canvas');
-      nebCv.width = Math.max(1, W|0); nebCv.height = Math.max(1, H|0);
-      const nx = nebCv.getContext('2d');
-      const neb=[[W*0.82,H*0.26,PRISM[0]],[W*0.12,H*0.80,PRISM[2]]];
-      for(const n of neb){
-        const g=nx.createRadialGradient(n[0],n[1],0,n[0],n[1],Math.max(W,H)*0.5);
-        const c=n[2];
-        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0.07)');
-        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
-        nx.fillStyle=g; nx.fillRect(0,0,W,H);
-      }
-    }
-
-
-    // ── FVの六角形のエコー：ガラス質の角丸六角形を1回だけオフスクリーンに焼く ──
-    // （毎フレームの path 再構築 / createRadialGradient を禁止。drawImageで貼るだけ＝激安）
-    let hexCv=null, hexes=[];
-    function roundedHexPath(c, R, rad){
-      // 角丸六角形のパス（pointy-top）。radは角の丸み
-      const pts=[];
-      for(let i=0;i<6;i++){ const a=-Math.PI/2 + i*Math.PI/3; pts.push([Math.cos(a)*R, Math.sin(a)*R]); }
-      c.beginPath();
-      for(let i=0;i<6;i++){
-        const p0=pts[i], p1=pts[(i+1)%6], pPrev=pts[(i+5)%6];
-        // p0 へ入る辺と出る辺で角を丸める
-        const v1=[p0[0]-pPrev[0], p0[1]-pPrev[1]];
-        const v2=[p1[0]-p0[0], p1[1]-p0[1]];
-        const l1=Math.hypot(v1[0],v1[1])||1, l2=Math.hypot(v2[0],v2[1])||1;
-        const aIn=[p0[0]-v1[0]/l1*rad, p0[1]-v1[1]/l1*rad];
-        const aOut=[p0[0]+v2[0]/l2*rad, p0[1]+v2[1]/l2*rad];
-        if(i===0) c.moveTo(aIn[0],aIn[1]); else c.lineTo(aIn[0],aIn[1]);
-        c.quadraticCurveTo(p0[0],p0[1], aOut[0],aOut[1]);
-      }
-      c.closePath();
-    }
-    // 1個の六角形タイル（輪郭線＋ごく薄い内側グロー）を1枚のcanvasに焼いて返す
-    function bakeHexTile(size, rgb, alpha){
-      const pad=Math.ceil(size*0.22);
-      const S=Math.ceil(size+pad*2);
-      const tile=document.createElement('canvas'); tile.width=S; tile.height=S;
-      const c=tile.getContext('2d');
-      c.translate(S/2,S/2);
-      const R=size/2;
-      // ごく薄い内側グロー（中心→縁でフェード）
-      const gg=c.createRadialGradient(0,0,0,0,0,R);
-      gg.addColorStop(0,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*0.9).toFixed(3)+')');
-      gg.addColorStop(0.62,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*0.28).toFixed(3)+')');
-      gg.addColorStop(1,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0)');
-      roundedHexPath(c, R*0.93, R*0.20);
-      c.fillStyle=gg; c.fill();
-      // ガラス質の輪郭線（細く・やや明るめ）
-      roundedHexPath(c, R*0.93, R*0.20);
-      c.lineWidth=Math.max(1, size*0.006);
-      c.strokeStyle='rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(alpha*1.7).toFixed(3)+')';
-      c.stroke();
-      return tile;
-    }
-    function buildHexEchoes(){
-      const mob = innerWidth<760;
-      const N = mob?2:3;
-      // 配置・色・サイズ・速度を散らす（FVから漂着した数個・主役を邪魔しない位置）
-      const presets = mob
-        ? [ {x:0.18,y:0.30,size:150,col:0,al:0.06,depth:0.16,drift:5,rot:0.012},
-            {x:0.80,y:0.66,size:200,col:2,al:0.05,depth:0.30,drift:7,rot:-0.009} ]
-        : [ {x:0.14,y:0.26,size:200,col:0,al:0.07,depth:0.14,drift:6, rot:0.010},
-            {x:0.83,y:0.40,size:280,col:2,al:0.055,depth:0.26,drift:9, rot:-0.008},
-            {x:0.52,y:0.78,size:150,col:1,al:0.05, depth:0.36,drift:5, rot:0.013} ];
-      const list = presets.slice(0,N);
-      hexes = list.map(function(p){
-        const rgb=PRISM[p.col];
-        return {
-          tile: bakeHexTile(p.size, rgb, p.al),
-          bx:p.x*W, by:p.y*H*2, size:p.size,
-          depth:p.depth, drift:p.drift, rot:p.rot, ph:rnd()*TAU
-        };
-      });
-    }
-    function drawHexEchoes(){
-      if(!hexes.length) return;
-      ctx.globalCompositeOperation='lighter';
-      for(const hx of hexes){
-        // 縦スクロールのパララックス（starsのdepth方式に倣う・宇宙の縦2画面でループ）
-        let y = (((hx.by - scrollY*hx.depth) % (H*2)) + (H*2)) % (H*2);
-        if(y > H + hx.size) continue;
-        // 超低速の漂いと僅かな回転
-        const dx = Math.sin(t*0.05 + hx.ph)*hx.drift;
-        const dy = Math.cos(t*0.04 + hx.ph)*hx.drift*0.7;
-        const ang = Math.sin(t*0.03 + hx.ph)*hx.rot*6;
-        ctx.save();
-        ctx.translate(hx.bx + dx, y + dy);
-        ctx.rotate(ang);
-        ctx.drawImage(hx.tile, -hx.tile.width/2, -hx.tile.height/2);
-        ctx.restore();
-      }
-      ctx.globalCompositeOperation='source-over';
-    }
-
-    function computeStops(){
-      stops = [].slice.call(document.querySelectorAll('[data-zone]')).map(function(el){
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        return { y: top + el.offsetHeight/2, c: ZC[el.dataset.zone] || ZC.cream };
-      }).sort(function(a,b){return a.y-b.y;});
-    }
-    function lerp(a,b,k){ return a+(b-a)*k; }
-    function baseAt(y){
-      if(!stops.length) return ZC.cream;
-      if(y<=stops[0].y) return stops[0].c;
-      const last=stops[stops.length-1];
-      if(y>=last.y) return last.c;
-      for(let i=0;i<stops.length-1;i++){
-        const s=stops[i], e=stops[i+1];
-        if(y>=s.y && y<=e.y){ const k=(y-s.y)/((e.y-s.y)||1);
-          return [lerp(s.c[0],e.c[0],k),lerp(s.c[1],e.c[1],k),lerp(s.c[2],e.c[2],k)]; }
-      }
-      return last.c;
-    }
-
-    function makeField(){
-      const mob = innerWidth<760;
-      // 星（瞬く・パララックス）
-      stars=[]; const N = mob?64:110;
-      for(let i=0;i<N;i++){
-        stars.push({ x:rnd()*W, y:rnd()*H*2, r:rnd()*1.3+0.3, base:0.25+rnd()*0.6,
-          ph:rnd()*TAU, tw:0.4+rnd()*1.0, depth:0.06+rnd()*0.4,
-          col: rnd()<0.28 ? PRISM[(rnd()*3)|0] : [228,230,255] });
-      }
-      // 軌道系（kaonaviの太陽系＝公転する光）
-      const cx = mob? W*0.72 : W*0.80, cy = mob? H*0.20 : H*0.30, bR = mob?64:118;
-      sys = { cx, cy, tilt:-0.46, core:[233,232,255], rings:[
-        { rx:bR*1.0, ry:bR*0.42, a:rnd()*TAU, spd:0.22, col:PRISM[0], dot:mob?3.2:4.4 },
-        { rx:bR*1.75,ry:bR*0.72, a:rnd()*TAU, spd:0.14, col:PRISM[1], dot:mob?2.8:4.0 },
-        { rx:bR*2.5, ry:bR*1.02, a:rnd()*TAU, spd:0.09, col:PRISM[2], dot:mob?2.4:3.6 }
-      ]};
-      // 流れ星（複数・時間差で次々流れる。kokiが一番ハマった要素）
-      comets=[]; const CN = mob?4:6;
-      function newComet(initWait){
-        const spd=(mob?2.2:3.0)*(0.8+rnd()*0.7);
-        const slope=0.26+rnd()*0.22;                 // 流れる角度を1本ごとに変える
-        return { x:-80-rnd()*W*0.4, y:H*(rnd()*0.7-0.05), vx:spd, slope:slope,
-                 len:(mob?80:140)*(0.8+rnd()*0.6), wait:initWait, col:PRISM[(rnd()*3)|0] };
-      }
-      for(let i=0;i<CN;i++){ comets.push(newComet(((rnd()*260)|0))); }   // 開始タイミングをばらす
-      makeField._newComet = newComet;
-    }
-
-    function paintBase(){
-      const base = baseAt(scrollY + H/2);
-      ctx.globalCompositeOperation='source-over';
-      ctx.fillStyle='rgb('+(base[0]|0)+','+(base[1]|0)+','+(base[2]|0)+')';
-      ctx.fillRect(0,0,W,H);
-      // 星雲は焼き済みを貼るだけ（毎フレームのグラデ生成・全画面塗り×2を廃止＝大幅軽量化）
-      if(nebCv){
-        ctx.globalCompositeOperation='lighter';
-        ctx.drawImage(nebCv, 0, 0, W, H);
-        ctx.globalCompositeOperation='source-over';
-      }
-    }
-
-    function drawStars(){
-      ctx.globalCompositeOperation='lighter';
-      for(const s of stars){
-        const y = (((s.y - scrollY*s.depth) % (H*2)) + (H*2)) % (H*2);
-        if(y>H+4) continue;
-        const tw = s.base*(0.45+0.55*(0.5+0.5*Math.sin(t*s.tw+s.ph)));
-        const c=s.col;
-        ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+tw.toFixed(3)+')';
-        ctx.beginPath(); ctx.arc(s.x, y, s.r, 0, TAU); ctx.fill();
-      }
-      ctx.globalCompositeOperation='source-over';
-    }
-
-    function drawSystem(){
-      const cx=sys.cx, cy=sys.cy - scrollY*0.05;     // スクロールでわずかに上へ
-      ctx.save(); ctx.translate(cx,cy); ctx.rotate(sys.tilt);
-      // 中心の光（恒星）
-      ctx.globalCompositeOperation='lighter';
-      const cg=ctx.createRadialGradient(0,0,0,0,0,innerWidth<760?26:40);
-      cg.addColorStop(0,'rgba(233,232,255,0.5)'); cg.addColorStop(1,'rgba(233,232,255,0)');
-      ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(0,0,innerWidth<760?26:40,0,TAU); ctx.fill();
-      ctx.globalCompositeOperation='source-over';
-      for(const r of sys.rings){
-        // 軌道線（破線・極薄）
-        ctx.strokeStyle='rgba(236,234,248,0.10)'; ctx.lineWidth=1; ctx.setLineDash([2,6]);
-        ctx.beginPath(); ctx.ellipse(0,0,r.rx,r.ry,0,0,TAU); ctx.stroke(); ctx.setLineDash([]);
-        // 公転する光（時間＋スクロールで進む＝scrub感）
-        const a = r.a + t*r.spd + scrollY*0.0010;
-        const px=Math.cos(a)*r.rx, py=Math.sin(a)*r.ry, c=r.col;
-        ctx.globalCompositeOperation='lighter';
-        const g=ctx.createRadialGradient(px,py,0,px,py,r.dot*4);
-        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0.9)');
-        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
-        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(px,py,r.dot*4,0,TAU); ctx.fill();
-        ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+',1)';
-        ctx.beginPath(); ctx.arc(px,py,r.dot,0,TAU); ctx.fill();
-        ctx.globalCompositeOperation='source-over';
-      }
-      ctx.restore();
-    }
-
-    function drawComets(){
-      ctx.globalCompositeOperation='lighter';
-      for(let i=0;i<comets.length;i++){
-        const m=comets[i];
-        if(running){
-          if(m.wait>0){ m.wait--; }
-          else {
-            m.x += m.vx; m.y += m.vx*m.slope;
-            if(m.x > W+m.len || m.y > H+m.len){ comets[i]=makeField._newComet(40+((rnd()*240)|0)); continue; }
-          }
-        }
-        if(m.wait>0) continue;
-        const c=m.col, tx=m.x-m.len, ty=m.y-m.len*m.slope;
-        const g=ctx.createLinearGradient(tx,ty,m.x,m.y);
-        g.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+',0)');
-        g.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+',0.7)');
-        ctx.strokeStyle=g; ctx.lineWidth=2; ctx.lineCap='round';
-        ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(m.x,m.y); ctx.stroke();
-        ctx.fillStyle='rgba(255,255,255,0.95)';
-        ctx.beginPath(); ctx.arc(m.x,m.y,1.7,0,TAU); ctx.fill();
-      }
-      ctx.globalCompositeOperation='source-over';
-    }
-
-    function render(){ paintBase(); drawHexEchoes(); drawStars(); drawSystem(); drawComets(); }
-    function frame(){ t+=0.016; render(); raf=requestAnimationFrame(frame); }
-    function renderStatic(){ render(); }
-
-    function start(){ if(running) return; running=true; frame(); }
-    function stop(){ running=false; cancelAnimationFrame(raf); }
-
-    let stageHidden=null;
+    let stageHidden = null;
     function onScroll(){
-      scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      const below = scrollY > innerHeight*0.4;
-      // FVをほぼ抜けたら背景動画を止める（display:none＋pause＝デコードを宇宙canvasに集中）。切替時のみ書き込み
-      if(stageEl){ const hide = scrollY > innerHeight*0.95; if(hide!==stageHidden){ stageHidden=hide; stageEl.style.display = hide?'none':'';
-        const v=document.getElementById('fvVideo'); if(v){ if(hide){ v.pause(); } else { v.play && v.play().catch(function(){}); } } } }
-      if(reduce){ if(below) renderStatic(); return; }
-      if(below) start(); else stop();
+      const sy = window.scrollY || document.documentElement.scrollTop || 0;
+      const hide = sy > innerHeight * 0.95;
+      if(hide !== stageHidden){
+        stageHidden = hide;
+        if(stageEl) stageEl.style.display = hide ? 'none' : '';
+        const v = document.getElementById('fvVideo');
+        if(v){ if(hide){ v.pause(); } else { v.play && v.play().catch(function(){}); } }
+      }
     }
-    function setup(){ resize(); computeStops(); makeField(); onScroll(); if(scrollY>innerHeight*0.4) renderStatic(); }
-
-    setup();
-    addEventListener('resize', function(){ resize(); computeStops(); makeField(); if(reduce||!running) renderStatic(); }, {passive:true});
     addEventListener('scroll', onScroll, {passive:true});
-    addEventListener('load', function(){ computeStops(); onScroll(); });
-    document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else onScroll(); });
+    document.addEventListener('visibilitychange', function(){
+      const v = document.getElementById('fvVideo');
+      if(!v || stageHidden) return;
+      if(document.hidden) v.pause(); else v.play && v.play().catch(function(){});
+    });
+    onScroll();
   })();
 
   /* ════════════ セクションIndex：現在地ハイライト＋FV以外で点灯 ════════════ */
@@ -1214,6 +1001,66 @@
     addEventListener('resize', function(){ measure(); update(); }, {passive:true});
     addEventListener('load', function(){ measure(); update(); });
     measure(); update();
+  })();
+
+  /* ════════════ MEMBERS：assets/members.json で点灯（公式LINE友だち数と夜間自動同期） ════════════ */
+  (function(){
+    function countUp(el, target){
+      let started = false;
+      function run(){
+        if(started) return; started = true;
+        const t0 = performance.now(), dur = 1600;
+        function f(t){
+          const k = Math.min(1, (t - t0) / dur);
+          const e = 1 - Math.pow(1 - k, 3);   /* power3.out */
+          el.textContent = Math.round(target * e);
+          if(k < 1) requestAnimationFrame(f);
+        }
+        requestAnimationFrame(f);
+      }
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver(function(es){
+          if(es.some(function(e){ return e.isIntersecting; })){ run(); io.disconnect(); }
+        }, { threshold: .4 });
+        io.observe(el);
+      } else { run(); }
+      /* 保険：3.5s経っても発火しなければ実数を直書き */
+      setTimeout(function(){ if(!started){ el.textContent = target; started = true; } }, 3500);
+    }
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+    function show(data){
+      const sec = document.getElementById('members'); if(!sec) return;
+      sec.hidden = false;
+      const dn = document.getElementById('dnMembers'); if(dn) dn.hidden = false;
+      /* このセクションのreveal-upはhidden中にScrollTrigger登録済み＝発火しない恐れ→直接最終表示 */
+      sec.querySelectorAll('.reveal-up').forEach(function(el){ el.style.opacity = '1'; el.style.transform = 'none'; });
+      if(Array.isArray(data.universities) && data.universities.length){
+        const u = document.getElementById('memUniv');
+        u.innerHTML = data.universities.map(function(n){ return '<span class="mem-chip">' + esc(n) + '</span>'; }).join('');
+        u.hidden = false;
+      }
+      if(Array.isArray(data.stats) && data.stats.length){
+        const s = document.getElementById('memStats');
+        s.innerHTML = data.stats.map(function(t){ return '<span>' + esc(t.k) + ' — <b>' + esc(t.v) + '</b></span>'; }).join('');
+        s.hidden = false;
+      }
+      countUp(document.getElementById('memNum'), data.count | 0);
+      /* レイアウト変化を各機構へ通知（dot-nav再計測・ScrollTrigger再計算） */
+      try{ window.dispatchEvent(new Event('resize')); }catch(e){}
+      if(typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    }
+    /* プレビュー用：?demo_members=32 で実数なしでも見られる（つっくん確認用） */
+    const demo = parseInt(new URLSearchParams(location.search).get('demo_members') || '', 10);
+    if(demo > 0){
+      show({ count: demo,
+        universities: ['広島大学','広島修道大学','広島経済大学'],
+        stats: [{k:'MEMBERS', v: demo + '名'}, {k:'UNIV', v:'3校'}] });
+      return;
+    }
+    fetch('assets/members.json', { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if(d && (d.count | 0) > 0) show(d); })
+      .catch(function(){ /* 失敗時はセクション非表示のまま＝事故ゼロ */ });
   })();
 </script>
 </body>
