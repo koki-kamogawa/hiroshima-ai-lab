@@ -515,12 +515,8 @@
     font-size:clamp(20px,2.4vw,32px); color:var(--ink-soft2);
   }
   .mem-count{ position:relative; }
-  .mem-count::before{   /* FVから漂着した六角形1個（線のみ・面は塗らない＝一刺し）。数字に僅かに重ねる */
-    content:""; position:absolute; left:34%; top:-30%;
-    width:clamp(120px,16vw,210px); aspect-ratio:1;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4 L89 27 L89 73 L50 96 L11 73 L11 27 Z' fill='none' stroke='%237C5CFF' stroke-opacity='.16' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;
-    pointer-events:none;
-  }
+  /* （数字に重ねる六角形装飾はkoki指示で削除 2026-06-11。文字の前に描画されて邪魔だった。
+      六角形モチーフは背景レイヤー(.ll-hex)に一本化） */
   .mem-lead{
     margin-top:clamp(14px,1.8vw,22px);
     font-family:"Noto Sans JP",sans-serif; font-weight:500;
@@ -548,7 +544,6 @@
   }
   @media (max-width:760px){
     .mem-num{ font-size:clamp(80px,30vw,140px); }
-    .mem-count::before{ display:none; }   /* SPは六角形省略（spec§3） */
   }
 
   /* 03 作例：スマホ実機モック＋テキストの罫線区切りリスト */
