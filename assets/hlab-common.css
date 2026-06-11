@@ -470,6 +470,22 @@ h1,h2,h3{ line-break:strict; word-break:auto-phrase; text-wrap:balance; }
   text-transform:uppercase; color:var(--ink-meta); display:block; margin-top:6px; }
 .org-row a{ color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(124,92,255,.3); }
 
+/* 実機モックアセット（トップ作例と同じ文法＝画面という物体で見せる） */
+.mock-phone{
+  width:clamp(230px,26vw,330px); height:auto; display:block;
+  filter:drop-shadow(0 24px 48px rgba(20,20,26,.16));
+}
+.mock-phone--tilt{ transform:rotate(3deg); }
+.mock-phone--tilt-l{ transform:rotate(-3deg); }
+.with-mock{ display:grid; gap:clamp(32px,5vw,64px); align-items:center; }
+@media (min-width:761px){
+  .with-mock{ grid-template-columns:1.15fr .85fr; }
+  .with-mock .mock-phone{ justify-self:center; }
+}
+@media (max-width:760px){
+  .with-mock .mock-phone{ margin:8px auto 0; width:min(72vw,300px); }
+}
+
 /* セクション内のz層（ウォーターマークの背面化） */
 .sec{ overflow:visible; }
 .sec > .watermark{ z-index:0; }
