@@ -313,6 +313,7 @@
   }
   .dot-nav.on{ opacity:1; pointer-events:auto; }
   .dot-nav a{ display:block; position:relative; padding:5px; }
+  .dot-nav a[hidden]{ display:none; }   /* MEMBERS非表示中は航路点も消す（display:blockがhiddenを打ち消すため明示） */
   .dn-dot{
     display:block; width:8px; height:8px; border-radius:50%;
     background:rgba(20,20,26,.20);   /* 温白地用の航路点 */
@@ -451,6 +452,54 @@
   [data-zone]{ position:relative; z-index:2; background:transparent; color:var(--ink2); }
   /* 最終セクションだけ僅かに沈めて特別感（暗転はしない・差4%以内） */
   .sec-join{ background:var(--bg2); }
+
+  /* 定義ストリップ（FV直下・「結局何する場所か」を3秒で。スリムなセクション） */
+  .sec-def{ padding-top:clamp(56px,8vw,110px); padding-bottom:clamp(40px,5vw,72px); }
+  .def-lead{
+    font-family:"Noto Sans JP",sans-serif; font-weight:700;
+    font-size:clamp(19px,2.6vw,30px); line-height:1.7; letter-spacing:.01em;
+    color:var(--ink2); max-width:30ch;
+  }
+  .def-lead em{ font-style:normal; color:var(--accent); }
+  .def-chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:clamp(18px,2.4vw,28px); }
+
+  /* 主催者カード（顔＝信頼の本丸） */
+  .host{
+    display:flex; gap:clamp(16px,2.2vw,26px); align-items:flex-start;
+    margin-top:1.2em;
+  }
+  .host-photo{
+    flex:none; width:clamp(76px,9vw,104px); height:auto; aspect-ratio:1;   /* height属性(480)の打ち消し必須 */
+    border-radius:22px; object-fit:cover;
+    box-shadow:0 10px 26px rgba(20,20,26,.14);
+  }
+  .host-name{
+    font-weight:700; color:var(--ink2); font-size:clamp(15px,1.5vw,17px);
+    display:block; margin-bottom:4px;
+  }
+  .host-name .kana{ font-weight:500; font-size:.82em; color:var(--ink-meta); margin-left:.6em; }
+
+  /* 協力（運営の実在証明・フッター直前） */
+  .coop{
+    position:relative; z-index:2;
+    padding:clamp(40px,6vw,72px) clamp(20px,5vw,80px);
+    border-top:1px solid var(--line);
+    display:flex; flex-wrap:wrap; align-items:center; gap:clamp(20px,3.5vw,48px);
+    background:var(--bg2);
+  }
+  .coop-label{
+    font-family:"Space Mono",monospace; font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-meta);
+    display:inline-flex; align-items:center; gap:.8em;
+  }
+  .coop-label::before{ content:""; width:clamp(18px,3vw,34px); height:1px; background:var(--accent); }
+  .coop-logo{ height:clamp(34px,4vw,46px); width:auto; display:block; }
+  .coop-body{ font-size:clamp(13px,1.3vw,15px); line-height:1.8; color:var(--ink-soft2); max-width:44ch; }
+  .coop-body a{ color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(124,92,255,.3); }
+  .coop-body a:hover{ border-bottom-color:var(--accent); }
+  @media (min-width:761px){
+    .coop{ padding-left:max(64px, calc((100% - 1180px)/2)); padding-right:max(64px, calc((100% - 1180px)/2)); }
+  }
 
   /* 00 MEMBERS（新設・社会的証明の主役。実数到着までは hidden＝members.jsonのcount>0で点灯） */
   .sec-members[hidden]{ display:none; }
@@ -763,6 +812,18 @@
 
 </main>
 
+<!-- ══ 定義ストリップ（「結局何する場所か」を3秒で） ══ -->
+<section class="sec sec-def" id="about" data-zone="cream">
+  <p class="sec-meta reveal-up">HIROSHIMA AI LAB とは</p>
+  <p class="def-lead reveal-up"><span class="ph">広島の大学生のための、</span><br><span class="ph">AIでアプリを作る<em>部活</em>です。</span></p>
+  <div class="def-chips reveal-up">
+    <span class="mem-chip">参加無料</span>
+    <span class="mem-chip">月1回・約3時間</span>
+    <span class="mem-chip">初心者OK・コードは書かない</span>
+    <span class="mem-chip">広島の大学生なら誰でも</span>
+  </div>
+</section>
+
 <!-- ══ 00 MEMBERS（社会的証明・members.jsonのcount>0で点灯） ══ -->
 <section class="sec sec-members" id="members" data-zone="cream" hidden>
   <p class="sec-meta reveal-up">00 — いま、ここにいる人</p>
@@ -843,15 +904,31 @@
 <section class="sec sec-join" id="join" data-zone="dark">
   <p class="sec-meta light reveal-up">04 — 参加する</p>
   <h2 class="join-title reveal-up">VOL.01、<br>もうすぐ<em class="glow">点灯</em>。</h2>
-  <p class="sec-lead light reveal-up">第1回は【日程調整中】。広島の大学生なら、誰でも。<br>まずはLINEで「気になる」とだけ送ってください。</p>
+  <p class="sec-lead light reveal-up">第1回は<b>6月後半に開催予定</b>。広島の大学生なら、誰でも。参加は無料です。<br>まずはLINEで「気になる」とだけ送ってください。</p>
   <a class="cta cta-lg reveal-up" href="#" id="cta-join">
     LINEで話を聞く <span class="arrow">→</span>
   </a>
   <div class="join-note reveal-up">
     <p><b>向いていないかも：</b>「作りたいものが決まっていて、すぐ誰かに外注したい」人には、たぶん物足りないです。ここは、自分の手で“作れる側”になりたい人のための場所。</p>
-    <p style="margin-top:1em"><b>主催：</b>【お名前】（広島で◯◯をしています）。「広島の学生こそ、AIで一番おもしろいことができる」と本気で思って、この場を始めました。<span style="opacity:.7"> ※顔写真とプロフィールは後日</span></p>
+    <div class="host">
+      <img class="host-photo" src="assets/host-koki.webp" alt="主催 鴨川虹輝" loading="lazy" decoding="async" width="480" height="480">
+      <p><span class="host-name">主催：鴨川 虹輝<span class="kana">かもがわ こうき</span></span>
+      大学4年生。2年間の休学中に、1年目はアパレル、2年目はAI導入支援（DX）の事業を経験。東京から、事業の立ち上げメンバーとして1年間のインターンで広島へ。「広島の学生こそ、AIで一番おもしろいことができる」——そう思って、この場をはじめました。</p>
+    </div>
   </div>
 </section>
+
+<!-- ══ 協力（運営の実在証明） ══ -->
+<div class="coop" data-zone="dark">
+  <span class="coop-label">協力</span>
+  <a href="https://jadc.tech/" target="_blank" rel="noopener" aria-label="日本AI開発センター株式会社 公式サイト">
+    <img class="coop-logo" src="assets/jadc-logo.webp" alt="JADC 日本AI開発センター株式会社" loading="lazy" decoding="async" width="520" height="160">
+  </a>
+  <p class="coop-body">
+    <b>日本AI開発センター株式会社</b>（島根県出雲市）— 生成AI導入研修・AIエージェント開発を手がけるAI開発会社。
+    HIROSHIMA AI LABはJADCの協力で運営しています。<a href="https://jadc.tech/" target="_blank" rel="noopener">公式サイト →</a>
+  </p>
+</div>
 
 <footer class="site-footer" data-zone="dark">
   <span class="ft-brand">HIROSHIMA AI LAB</span>
