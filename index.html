@@ -183,7 +183,7 @@
   }
   .eyebrow{
     font-family:"Space Mono",monospace;
-    font-size:clamp(11px,1.15vw,13px);
+    font-size:clamp(12px,1.25vw,14px);
     letter-spacing:.24em; text-transform:uppercase;
     color:var(--ink-soft);
     margin-bottom:clamp(14px,1.8vw,24px);
@@ -396,7 +396,7 @@
     width:min(62vw,720px); height:min(62vw,720px);
     left:-12vw; top:6vh;
     background:radial-gradient(circle at 50% 50%,
-      rgba(124,92,255,.060), rgba(124,92,255,.028) 46%, rgba(124,92,255,0) 72%);
+      rgba(124,92,255,.048), rgba(124,92,255,.022) 46%, rgba(124,92,255,0) 72%);
     animation:llDriftA 92s ease-in-out infinite;
   }
   /* ピンク×水色の柔光：右側→逆位相で漂う（周期71s） */
@@ -777,6 +777,15 @@
   @media (max-width:760px){ .sh-inner{ height:56px; } .sh-nav,.sh-cta{ display:none; } .nav-toggle{ display:flex; } }
   @media (min-width:761px){ .nav-overlay{ display:none; } }
 
+  /* joinのghost大文字（下層ウォーターマークとの整合・失速感を締める） */
+  .sec-join{ position:relative; overflow:hidden; }
+  .join-wm{
+    position:absolute; right:-2vw; bottom:-4vh; z-index:0; pointer-events:none; user-select:none;
+    font-family:"Space Mono",monospace; font-weight:700; font-size:clamp(110px,18vw,300px);
+    line-height:1; color:rgba(20,20,26,.035); letter-spacing:-.02em;
+  }
+  .sec-join > *:not(.join-wm){ position:relative; z-index:2; }
+
   /* 下層への小リンク（mono＋矢印） */
   .more-link{ display:inline-flex; align-items:center; gap:.6em; margin-top:clamp(20px,2.6vw,32px); font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.12em; color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(124,92,255,.3); padding-bottom:2px; transition:border-color .3s; }
   .more-link:hover{ border-bottom-color:var(--accent); }
@@ -1001,6 +1010,7 @@
 
 <!-- ══ 05 参加する（暗転＝点灯／正直さ＋主催者の顔） ══ -->
 <section class="sec sec-join" id="join" data-zone="dark" style="padding-bottom:clamp(56px,8vw,110px)">
+  <span class="join-wm" aria-hidden="true">JOIN</span>
   <p class="sec-meta light reveal-up">05 — 参加する</p>
   <h2 class="join-title reveal-up">VOL.01、<br>もうすぐ<em class="glow">点灯</em>。</h2>
   <p class="sec-lead light reveal-up">第1回は<b>6月後半に開催予定</b>。広島の大学生なら、誰でも。参加は無料です。<br>まずはLINEで「気になる」とだけ送ってください。</p>

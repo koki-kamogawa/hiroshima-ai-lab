@@ -48,7 +48,7 @@ h1,h2,h3{ line-break:strict; word-break:auto-phrase; text-wrap:balance; }
 .ll-blob{ position:absolute; border-radius:50%; filter:blur(70px); will-change:transform; }
 .ll-blob.a{
   width:min(62vw,720px); height:min(62vw,720px); left:-12vw; top:6vh;
-  background:radial-gradient(circle at 50% 50%, rgba(124,92,255,.060), rgba(124,92,255,.028) 46%, rgba(124,92,255,0) 72%);
+  background:radial-gradient(circle at 50% 50%, rgba(124,92,255,.048), rgba(124,92,255,.022) 46%, rgba(124,92,255,0) 72%);
   animation:llDriftA 92s ease-in-out infinite;
 }
 .ll-blob.b{
