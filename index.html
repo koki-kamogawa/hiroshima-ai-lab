@@ -366,6 +366,78 @@
 
   /* （旧・宇宙canvasはクリーン刷新で全撤去。地はbodyの温白が受け持つ） */
 
+  /* ─────────────────────────────────────────────────────────────
+     背景の生きた光（FV以下・クリーン刷新の"動き"）
+     コンセプト：FVのガラスから漏れた光が、白い紙の上をゆっくり泳ぐ。
+     ・温白地の上 / grain(z:1)・コンテンツ(z:2)より下の z:0 に固定。
+     ・プリズム柔光ブロブ2個＝超大径・超低alpha・大ブラー。異周期で常時ドリフト。
+     ・六角輪郭1個＝FVモチーフの継続。超低速回転＋scrubパララックス(JS)。
+     ・blur は要素に1回だけ（アニメさせない）/ transform・opacity のみ動かす＝60fps・GPU安価。
+     ・面のベタ塗り・星・宇宙は禁止（AI臭）。あくまで"白い紙に滲む光"。
+     ───────────────────────────────────────────────────────────── */
+  .livinglight{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    overflow:hidden; isolation:isolate;
+    /* FV(min-height:100vh)の真下から効かせたい意図だが、fixedで全編に薄く滲ませる。
+       FVは自前の不透明背景(var(--bg))＋動画でこのレイヤーを覆うので干渉しない。 */
+  }
+  .ll-blob{
+    position:absolute; border-radius:50%;
+    filter:blur(70px);                 /* blurは固定（アニメさせない＝負荷源を作らない） */
+    will-change:transform;
+    opacity:1;
+  }
+  /* 紫の柔光：左上→ゆっくり大きく漂う（周期92s） */
+  .ll-blob.a{
+    width:min(62vw,720px); height:min(62vw,720px);
+    left:-12vw; top:6vh;
+    background:radial-gradient(circle at 50% 50%,
+      rgba(124,92,255,.060), rgba(124,92,255,.028) 46%, rgba(124,92,255,0) 72%);
+    animation:llDriftA 92s ease-in-out infinite;
+  }
+  /* ピンク×水色の柔光：右側→逆位相で漂う（周期71s） */
+  .ll-blob.b{
+    width:min(54vw,640px); height:min(54vw,640px);
+    right:-10vw; top:34vh;
+    background:radial-gradient(circle at 50% 50%,
+      rgba(255,111,181,.050), rgba(92,225,230,.030) 50%, rgba(92,225,230,0) 74%);
+    animation:llDriftB 71s ease-in-out infinite;
+  }
+  /* 六角輪郭：FVから漂着した1個。超低速回転（128s）＋scrub-yはJSで付与 */
+  .ll-hex{
+    position:absolute;
+    right:8vw; top:50vh;
+    width:min(40vw,420px); aspect-ratio:1;
+    opacity:.5;
+    will-change:transform;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 3 L91 26.5 L91 73.5 L50 97 L9 73.5 L9 26.5 Z' fill='none' stroke='%237C5CFF' stroke-opacity='.14' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;
+    animation:llSpin 128s linear infinite;
+  }
+  /* ドリフト＝translate のみ（左右上下にゆっくり泳ぐ。scaleも僅かに呼吸） */
+  @keyframes llDriftA{
+    0%   { transform:translate(0,0)            scale(1);    }
+    33%  { transform:translate(7vw,5vh)        scale(1.08); }
+    66%  { transform:translate(-3vw,11vh)      scale(.96);  }
+    100% { transform:translate(0,0)            scale(1);    }
+  }
+  @keyframes llDriftB{
+    0%   { transform:translate(0,0)            scale(1);    }
+    40%  { transform:translate(-8vw,-6vh)      scale(1.10); }
+    70%  { transform:translate(2vw,4vh)        scale(.94);  }
+    100% { transform:translate(0,0)            scale(1);    }
+  }
+  @keyframes llSpin{ to{ transform:rotate(360deg); } }
+
+  @media (max-width:760px){
+    .ll-blob{ filter:blur(54px); }
+    .ll-blob.a{ width:90vw; height:90vw; left:-20vw; }
+    .ll-blob.b{ width:84vw; height:84vw; right:-22vw; top:46vh; }
+    .ll-hex{ width:64vw; right:-6vw; top:54vh; opacity:.38; }  /* SPは控えめ・端に逃がす */
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ll-blob, .ll-hex{ animation:none !important; }   /* 静止（光は置いたまま） */
+  }
+
   /* グレイン（fixed・本文の下。温白にうっすら粒状感＝手の質感・AI臭解毒） */
   .grain{
     position:fixed; inset:0; z-index:1; pointer-events:none;
@@ -625,6 +697,13 @@
 </head>
 
 <body>
+<!-- 背景の生きた光（FV以下・コンセプト「ガラスから漏れた光が白い紙を泳ぐ」） -->
+<div class="livinglight" aria-hidden="true">
+  <span class="ll-blob a"></span>
+  <span class="ll-blob b"></span>
+  <span class="ll-hex" id="llHex"></span>
+</div>
+
 <!-- 紙のグレイン（質感＝人の手。のっぺりAI感の解毒） -->
 <div class="grain" aria-hidden="true"></div>
 
@@ -933,6 +1012,14 @@
       width:'100%', ease:'none',
       scrollTrigger:{ start:0, end:'max', scrub:0.3 }
     });
+
+    // ── 背景の六角：スクロール連動でゆっくり縦に流れる（FV→下へ降りる物語・scrubのみ＝CPUほぼゼロ） ──
+    if(document.getElementById('llHex')){
+      gsap.to('#llHex', {
+        yPercent:42, ease:'none',
+        scrollTrigger:{ start:0, end:'max', scrub:1.2 }
+      });
+    }
 
     // 画像/フォント読込後にレイアウトずれを補正
     addEventListener('load', function(){ ScrollTrigger.refresh(); });
