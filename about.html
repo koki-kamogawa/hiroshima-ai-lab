@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-<link rel="stylesheet" href="assets/hlab-common.css?v=6">
+<link rel="stylesheet" href="assets/hlab-common.css?v=7">
 </head>
 <body>
 <div class="livinglight" aria-hidden="true">
@@ -56,12 +56,15 @@
 
 <section class="sec">
   <p class="sec-meta reveal-up">A — これは、何をする場所か</p>
-  <div class="with-mock">
+  <div class="with-mock--wide">
     <div>
       <h2 class="kw-hero reveal-up"><span class="ph">コードは、</span><br><span class="ph">書かない。</span></h2>
-      <p class="band-side reveal-up" style="margin-top:clamp(18px,2.4vw,30px)">日本語でAIに話しかけるだけ。広島の大学生が月に1度集まって、その日にアプリを<span class="nb">1つ</span>作る。それだけです。</p>
+      <p class="band-side reveal-up" style="margin-top:clamp(18px,2.4vw,30px)">PCで、AIに日本語で話しかけるだけ。広島の大学生が月に1度集まって、その日にアプリを<span class="nb">1つ</span>作る。それだけです。</p>
     </div>
-    <img class="mock-phone mock-phone--tilt reveal-up" src="assets/mock-ai-chat.webp" alt="AIに日本語で話しかけてアプリを作る画面" loading="lazy" decoding="async" width="680" height="1400">
+    <picture class="reveal-up">
+      <source media="(max-width:760px)" srcset="assets/mock-claude-code-sp.webp">
+      <img class="mock-window" src="assets/mock-claude-code.webp" alt="Claude Codeに日本語で話しかけてアプリを作るターミナル画面" loading="lazy" decoding="async" width="1520" height="813">
+    </picture>
   </div>
 </section>
 

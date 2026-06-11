@@ -477,6 +477,18 @@ h1,h2,h3{ line-break:strict; word-break:auto-phrase; text-wrap:balance; }
 }
 .mock-phone--tilt{ transform:rotate(3deg); }
 .mock-phone--tilt-l{ transform:rotate(-3deg); }
+.mock-window{   /* PCターミナル等の横長ウィンドウモック */
+  width:clamp(340px,46vw,640px); height:auto; display:block;
+  filter:drop-shadow(0 24px 48px rgba(20,20,26,.18));
+}
+.with-mock--wide{ display:grid; gap:clamp(32px,5vw,64px); align-items:center; }
+@media (min-width:761px){
+  .with-mock--wide{ grid-template-columns:.9fr 1.1fr; }
+  .with-mock--wide .mock-window{ justify-self:end; }
+}
+@media (max-width:760px){
+  .with-mock--wide .mock-window{ width:100%; margin-top:8px; }
+}
 .with-mock{ display:grid; gap:clamp(32px,5vw,64px); align-items:center; }
 @media (min-width:761px){
   .with-mock{ grid-template-columns:1.15fr .85fr; }
