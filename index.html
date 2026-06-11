@@ -11,6 +11,9 @@
 <meta property="og:description" content="広島の大学生の、作る遊び場。VOL.01、もうすぐ点灯。">
 <meta property="og:type" content="website">
 
+<meta property="og:url" content="https://koki-kamogawa.github.io/hiroshima-ai-lab/">
+<meta property="og:image" content="https://koki-kamogawa.github.io/hiroshima-ai-lab/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <!-- Favicon（四芒星の灯） -->
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
@@ -684,6 +687,7 @@
     }
     .sec-make .card{ border-top:1px solid var(--line); border-bottom:0; }
     .sec-make .card:nth-child(3){ margin-left:0; }
+    .sec-make .card:nth-child(2){ margin-top:clamp(36px,4.5vw,72px); }   /* 右列を半段下げる＝非対称のリズム（審査指摘対応） */
     .sec-make > .sec-lead{ max-width:none; }
 
     /* 03 HOW：ステップを3カラム（横並びの工程＝バランス良） */
@@ -996,7 +1000,7 @@
 </section>
 
 <!-- ══ 05 参加する（暗転＝点灯／正直さ＋主催者の顔） ══ -->
-<section class="sec sec-join" id="join" data-zone="dark">
+<section class="sec sec-join" id="join" data-zone="dark" style="padding-bottom:clamp(56px,8vw,110px)">
   <p class="sec-meta light reveal-up">05 — 参加する</p>
   <h2 class="join-title reveal-up">VOL.01、<br>もうすぐ<em class="glow">点灯</em>。</h2>
   <p class="sec-lead light reveal-up">第1回は<b>6月後半に開催予定</b>。広島の大学生なら、誰でも。参加は無料です。<br>まずはLINEで「気になる」とだけ送ってください。</p>
