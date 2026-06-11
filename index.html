@@ -522,15 +522,19 @@
     font-family:"Noto Sans JP",sans-serif; font-weight:500;
     font-size:clamp(15px,1.7vw,19px); line-height:1.9; color:var(--ink-soft2);
   }
-  .mem-univ{ display:flex; flex-wrap:wrap; gap:10px 10px; align-content:start; }
-  .mem-chip{
-    display:inline-flex; align-items:center; gap:.5em;
-    padding:9px 16px; border:1px solid rgba(20,20,26,.12); border-radius:100px;
-    font-family:"Noto Sans JP",sans-serif; font-size:clamp(12px,1.2vw,14px);
-    color:var(--ink-soft2); background:transparent;
+  /* 事実の羅列はピル/カードでなくmono一行組版で（チップ=UIテンプレ文法=AI臭・koki指摘 2026-06-11） */
+  .mem-univ{ display:flex; flex-direction:column; gap:8px; align-content:start;
+    font-family:"Space Mono",monospace; font-size:clamp(12px,1.2vw,14px);
+    letter-spacing:.1em; color:var(--ink-soft2); }
+  .def-facts{
+    margin-top:clamp(20px,2.6vw,30px); padding-top:clamp(12px,1.6vw,18px);
+    border-top:1px solid var(--line);
+    font-family:"Space Mono",monospace; font-size:clamp(11.5px,1.2vw,13.5px);
+    letter-spacing:.12em; color:var(--ink-meta);
+    display:flex; flex-wrap:wrap; gap:8px clamp(14px,2.6vw,32px);
+    max-width:760px;
   }
-  .mem-chip::before{ content:""; width:6px; height:6px; border-radius:50%;
-    background:linear-gradient(120deg,var(--prism-a),var(--prism-b),var(--prism-c)); }
+  .def-facts span{ white-space:nowrap; }
   .mem-stats{
     margin-top:clamp(28px,4vw,48px); padding-top:clamp(16px,2vw,24px);
     border-top:1px solid var(--line);
@@ -889,12 +893,7 @@
 <section class="sec sec-def" id="about" data-zone="cream">
   <p class="sec-meta reveal-up">HIROSHIMA AI LAB とは</p>
   <p class="def-lead reveal-up"><span class="ph">広島の大学生のための、</span><br><span class="ph">AIでアプリを作る<em>コミュニティ</em>です。</span></p>
-  <div class="def-chips reveal-up">
-    <span class="mem-chip">参加無料</span>
-    <span class="mem-chip">月1回・約3時間</span>
-    <span class="mem-chip">初心者OK・コードは書かない</span>
-    <span class="mem-chip">広島の大学生なら誰でも</span>
-  </div>
+  <p class="def-facts reveal-up"><span>参加無料</span><span>月1回・約3時間</span><span>初心者OK・コードは書かない</span><span>広島の大学生なら誰でも</span></p>
 </section>
 
 <!-- ══ 00 MEMBERS（社会的証明・members.jsonのcount>0で点灯） ══ -->
@@ -1343,7 +1342,7 @@
       sec.querySelectorAll('.reveal-up').forEach(function(el){ el.style.opacity = '1'; el.style.transform = 'none'; });
       if(Array.isArray(data.universities) && data.universities.length){
         const u = document.getElementById('memUniv');
-        u.innerHTML = data.universities.map(function(n){ return '<span class="mem-chip">' + esc(n) + '</span>'; }).join('');
+        u.innerHTML = data.universities.map(function(n){ return '<span>— ' + esc(n) + '</span>'; }).join('');
         u.hidden = false;
       }
       if(Array.isArray(data.stats) && data.stats.length){
