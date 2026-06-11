@@ -19,7 +19,7 @@
   --ease-out:  cubic-bezier(.16,1,.3,1);
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
-html{ -webkit-text-size-adjust:100%; background:var(--bg); }
+html{ -webkit-text-size-adjust:100%; background:var(--bg); overflow-x:clip; }   /* 装飾のはみ出しを構造的に遮断（横スクロール禁止） */
 /* scroll-behavior:smooth は禁止：Lenisと二重補間になり全スクロールが激重化する（2026-06-11実測 11fps→修正） */
 body{
   background:var(--bg); color:var(--ink);
@@ -337,6 +337,140 @@ h1,h2,h3{ line-break:strict; word-break:auto-phrase; text-wrap:balance; }
   display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;
   font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-meta);
 }
+
+/* ═══════════ craft部品（design-spec-sub2.md・差し戻し対応） ═══════════ */
+
+/* C3: mono大型ウォーターマーク（背面の地紋・面でなく極薄） */
+.watermark{
+  position:absolute; z-index:0; pointer-events:none; user-select:none;
+  font-family:"Space Mono",monospace; font-weight:700;
+  font-size:clamp(120px,22vw,340px); line-height:1;
+  color:rgba(20,20,26,.035); letter-spacing:-.02em; white-space:nowrap;
+}
+.page-hero .watermark{ left:-2vw; top:8vh; }
+.page-hero{ overflow:hidden; min-height:50vh; }
+@media (max-width:760px){ .page-hero{ min-height:42vh; } }
+.page-hero .ph-label, .page-hero .ph-title, .page-hero .ph-lead{ position:relative; z-index:2; }
+
+/* C2: 特大キーワード（aboutの定義主役） */
+.kw-hero{
+  font-family:"Noto Sans JP",sans-serif; font-weight:700;
+  font-size:clamp(40px,8vw,96px); line-height:1.18; letter-spacing:-.02em; color:var(--ink);
+  position:relative; z-index:2;
+}
+.band-offset{ display:grid; gap:clamp(20px,3vw,40px); }
+@media (min-width:761px){
+  .band-offset{ grid-template-columns:1.3fr .7fr; align-items:end; }
+  .band-offset .band-side{ padding-bottom:8px; }
+}
+.band-side{ font-size:clamp(15px,1.6vw,17px); line-height:2.0; color:var(--ink-soft); max-width:36ch; }
+
+/* 特大数字グリッド（about §B「月1/3h/¥0/1つ」） */
+.stats{ display:grid; grid-template-columns:1.15fr 1fr .9fr 1fr; gap:clamp(14px,2.4vw,36px);
+  margin-top:clamp(36px,5vw,64px); padding-bottom:clamp(24px,3.4vw,44px); border-bottom:1px solid rgba(20,20,26,.10); }
+.stat{ display:flex; align-items:baseline; gap:.1em; }
+.stat-num{
+  font-family:"Clash Display","General Sans","Noto Sans JP",sans-serif; font-weight:600;
+  font-size:clamp(56px,8.4vw,128px); line-height:1; letter-spacing:-.03em; color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.stat-num--prism{
+  display:inline-block; color:var(--prism-b);
+  background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 55%,#3FAEBE);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.stat-unit{ font-family:"Noto Sans JP",sans-serif; font-weight:700; font-size:clamp(13px,1.4vw,18px); color:var(--ink-meta); }
+.stats-meta{
+  margin-top:clamp(14px,2vw,22px);
+  font-family:"Space Mono",monospace; font-size:clamp(11px,1.2vw,13px); letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-meta);
+  display:flex; flex-wrap:wrap; gap:clamp(14px,3vw,40px);
+}
+@media (max-width:760px){
+  .stats{ grid-template-columns:1fr 1fr; row-gap:clamp(28px,7vw,40px); }
+  .stat-num{ font-size:clamp(48px,17vw,72px); }
+}
+
+/* about §C: 特大step番号タイムライン */
+.tl-no--xl{
+  position:static; flex:none; width:clamp(72px,11vw,150px);
+  font-family:"Space Mono",monospace; font-weight:700;
+  font-size:clamp(48px,7vw,96px); line-height:1; color:var(--ink); letter-spacing:-.04em;
+}
+.tl2{ margin-top:clamp(36px,5vw,60px); }
+.tl2-step{ display:flex; gap:clamp(18px,3vw,44px); align-items:flex-start;
+  padding:clamp(24px,3.4vw,40px) 0; border-top:1px solid rgba(20,20,26,.08); }
+.tl2-step h3{ font-weight:700; font-size:clamp(19px,2.2vw,24px); color:var(--ink); margin-bottom:8px; }
+.tl2-step p{ font-size:clamp(14px,1.5vw,16px); line-height:1.95; color:var(--ink-soft); max-width:44ch; }
+@media (max-width:760px){ .tl2-step{ flex-direction:row; gap:16px; } .tl-no--xl{ width:64px; font-size:44px; } }
+
+/* faq §1: 質問インデックス（俯瞰の目次） */
+.q-index{ display:grid; gap:0 clamp(32px,5vw,72px); margin-top:clamp(30px,4vw,48px); max-width:1000px; }
+@media (min-width:761px){ .q-index{ grid-template-columns:1fr 1fr; } }
+.qi-item{
+  display:flex; gap:14px; align-items:baseline; text-decoration:none;
+  padding:13px 2px; border-bottom:1px solid rgba(20,20,26,.08);
+  font-size:clamp(15px,1.6vw,18px); font-weight:500; color:var(--ink);
+  position:relative;
+}
+.qi-item::after{
+  content:""; position:absolute; left:0; bottom:-1px; height:1px; width:0;
+  background:linear-gradient(90deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c));
+  transition:width .3s var(--ease-out);
+}
+.qi-item:hover::after{ width:100%; }
+.qi-item .qno{ flex:none; font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.1em; color:var(--ink-meta); }
+
+/* faq §2: 重要3問の昇格 */
+.faq-top .faq-item{ padding:clamp(30px,4.4vw,52px) 0; max-width:880px; }
+.faq-top .faq-q{ font-size:clamp(20px,2.8vw,32px); }
+.faq-top .faq-q .qno{
+  font-size:clamp(15px,2vw,24px); color:var(--prism-b);
+  background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 55%,#3FAEBE);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.faq-top .faq-a{ font-size:clamp(16px,1.9vw,19px); margin-top:14px; }
+
+/* organizer §A: 主催者写真の主役化 */
+.profile--lg{ position:relative; display:grid; gap:clamp(24px,4vw,56px); margin-top:clamp(32px,4.5vw,52px); align-items:center; }
+@media (min-width:761px){ .profile--lg{ grid-template-columns:auto 1fr; } }
+.host-photo--lg{
+  width:clamp(300px,34vw,480px); aspect-ratio:4/5; height:auto; object-fit:cover;
+  border-radius:16px; box-shadow:0 30px 60px rgba(20,20,26,.10);
+  position:relative; z-index:2;
+}
+.profile--lg::before{   /* 背面六角形（写真と干渉＝C4） */
+  content:""; position:absolute; left:clamp(180px,22vw,340px); top:-8%;
+  width:clamp(220px,26vw,380px); aspect-ratio:1; z-index:1; pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 3 L91 26.5 L91 73.5 L50 97 L9 73.5 L9 26.5 Z' fill='none' stroke='%237C5CFF' stroke-opacity='.14' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;
+}
+.profile--lg .profile-name{ font-size:clamp(28px,4vw,48px); letter-spacing:-.01em; }
+.profile-meta{ margin-top:14px; display:grid; gap:6px;
+  font-size:clamp(14px,1.5vw,16px); line-height:1.8; color:var(--ink-soft); }
+.profile-quote{
+  margin-top:clamp(20px,2.6vw,30px); padding-left:18px;
+  border-left:2px solid; border-image:linear-gradient(180deg,var(--prism-a),var(--prism-b),var(--prism-c)) 1;
+  font-size:clamp(15px,1.7vw,18px); line-height:2.0; color:var(--ink); font-weight:500; max-width:40ch;
+}
+@media (max-width:760px){
+  .host-photo--lg{ width:100%; max-width:none; }
+  .profile--lg::before{ left:auto; right:-10vw; top:-6%; }
+}
+
+/* organizer §B: JADC横組み */
+.org-row{ display:flex; flex-wrap:wrap; gap:clamp(24px,4vw,56px); align-items:center;
+  margin-top:clamp(28px,4vw,44px); padding:clamp(24px,3.4vw,40px) 0;
+  border-top:1px solid rgba(20,20,26,.08); border-bottom:1px solid rgba(20,20,26,.08); max-width:1000px; }
+.org-row img{ height:clamp(40px,5vw,58px); width:auto; }
+.org-row .org-body{ font-size:clamp(13.5px,1.45vw,15.5px); line-height:1.95; color:var(--ink-soft); max-width:46ch; }
+.org-row .org-meta{ font-family:"Space Mono",monospace; font-size:11.5px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-meta); display:block; margin-top:6px; }
+.org-row a{ color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(124,92,255,.3); }
+
+/* セクション内のz層（ウォーターマークの背面化） */
+.sec{ overflow:visible; }
+.sec > .watermark{ z-index:0; }
+.sec > *:not(.watermark){ position:relative; z-index:2; }
 
 /* reveal-up（JSで発火。失敗時もJSが3sで強制表示） */
 .js .reveal-up{ opacity:0; transform:translateY(34px); }

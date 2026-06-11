@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-<link rel="stylesheet" href="assets/hlab-common.css?v=2">
+<link rel="stylesheet" href="assets/hlab-common.css?v=4">
 </head>
 <body>
 <div class="livinglight" aria-hidden="true">
@@ -48,69 +48,87 @@
 </nav>
 
 <section class="page-hero">
+  <span class="watermark" aria-hidden="true">Q&amp;A</span>
   <p class="ph-label">03 — FAQ</p>
   <h1 class="ph-title">よくある質問</h1>
   <p class="ph-lead">不安は、先に全部つぶしておく。</p>
 </section>
 
-<section class="sec">
-  <p class="sec-meta reveal-up">A — 費用・条件</p>
+<section class="sec" style="padding-bottom:clamp(32px,4vw,56px)">
+  <p class="sec-meta reveal-up">A — 全部の質問（押すと答えへ）</p>
+  <nav class="q-index" aria-label="質問一覧">
+    <a class="qi-item reveal-up" href="#q01"><span class="qno">01</span>参加にお金はかかる？</a>
+    <a class="qi-item reveal-up" href="#q02"><span class="qno">02</span>プログラミング未経験でも大丈夫？</a>
+    <a class="qi-item reveal-up" href="#q03"><span class="qno">03</span>作るものが決まってなくてもいい？</a>
+    <a class="qi-item reveal-up" href="#q04"><span class="qno">04</span>広島の大学生以外は参加できない？</a>
+    <a class="qi-item reveal-up" href="#q05"><span class="qno">05</span>3時間で完成しなかったら？</a>
+    <a class="qi-item reveal-up" href="#q06"><span class="qno">06</span>途中参加・途中退出はできる？</a>
+    <a class="qi-item reveal-up" href="#q07"><span class="qno">07</span>広島市内に来られない回は？</a>
+    <a class="qi-item reveal-up" href="#q08"><span class="qno">08</span>作ったアプリは持ち帰れる？</a>
+    <a class="qi-item reveal-up" href="#q09"><span class="qno">09</span>どうやって申し込む？</a>
+    <a class="qi-item reveal-up" href="#q10"><span class="qno">10</span>友だち追加だけで参加になる？</a>
+    <a class="qi-item reveal-up" href="#q11"><span class="qno">11</span>毎回参加しないとダメ？</a>
+  </nav>
+</section>
+
+<section class="sec faq-top" style="padding-top:clamp(20px,3vw,40px);padding-bottom:clamp(28px,4vw,56px)">
+  <p class="sec-meta reveal-up">B — まずこの3つ</p>
   <div class="faq-cat">
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q01</span>参加するのにお金はかかりますか？</div>
-      <p class="faq-a">かかりません。参加は無料です。これからも、ずっと無料でやるつもりです。</p>
+    <div class="faq-item reveal-up" id="q01">
+      <div class="faq-q"><span class="qno">Q01</span>参加にお金はかかる？</div>
+      <p class="faq-a">かかりません。<b>¥0、ずっと無料</b>です。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q02</span>プログラミングの経験がなくても大丈夫ですか？</div>
-      <p class="faq-a">まったく問題ありません。コードは書きません。日本語でAIに話しかけるだけで、アプリが作れます。「プログラミングって何？」という状態でも、ちゃんと楽しめます。</p>
+    <div class="faq-item reveal-up" id="q02">
+      <div class="faq-q"><span class="qno">Q02</span>プログラミング未経験でも大丈夫？</div>
+      <p class="faq-a">大丈夫。コードは書きません。日本語でAIに話しかけるだけです。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q03</span>広島の大学生以外は参加できませんか？</div>
-      <p class="faq-a">基本的には広島の大学生を対象にしています。気になる方はまずLINEで相談してください。</p>
+    <div class="faq-item reveal-up" id="q03">
+      <div class="faq-q"><span class="qno">Q03</span>作るものが決まってなくてもいい？</div>
+      <p class="faq-a">その場で決めてOK。他の人のアイデアを見てから決める人もいます。</p>
     </div>
   </div>
 </section>
 
-<section class="sec">
-  <p class="sec-meta reveal-up">B — 当日のこと</p>
+<section class="sec" style="padding-top:clamp(20px,3vw,44px);padding-bottom:clamp(28px,4vw,56px)">
+  <p class="sec-meta reveal-up">C — 当日のこと</p>
   <div class="faq-cat">
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q04</span>当日、作りたいものが決まっていなくてもいいですか？</div>
-      <p class="faq-a">大丈夫です。その日に「作ってみようかな」と思ったものを、その場で決めてもOKです。他の参加者のアイデアを聞いてから決める人もいます。</p>
+    <div class="faq-item reveal-up" id="q05">
+      <div class="faq-q"><span class="qno">Q05</span>3時間で完成しなかったら？</div>
+      <p class="faq-a">まったく問題ありません。「ここまで作った」を見せるだけで十分です。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q05</span>3時間で完成しなかったらどうなりますか？</div>
-      <p class="faq-a">完成しなくても、まったく問題ありません。「ここまで作った」を見せるだけで十分です。</p>
+    <div class="faq-item reveal-up" id="q06">
+      <div class="faq-q"><span class="qno">Q06</span>途中参加・途中退出はできる？</div>
+      <p class="faq-a">途中からでも、途中で抜けても大丈夫です。時間の都合はLINEで気軽にどうぞ。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q06</span>途中参加・途中退出はできますか？</div>
-      <p class="faq-a">途中からでも、途中で抜けても大丈夫です。詳しい時間の都合は、LINEで気軽に相談してください。</p>
+    <div class="faq-item reveal-up" id="q07">
+      <div class="faq-q"><span class="qno">Q07</span>広島市内に来られない回は？</div>
+      <p class="faq-a">オンラインで参加できます。来られない日があっても続けられます。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q07</span>広島市内に来られない回は、どうなりますか？</div>
-      <p class="faq-a">オンラインでの参加ができます。来られない日があっても、参加し続けられます。</p>
-    </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q08</span>作ったアプリは、自分で持ち帰れますか？</div>
-      <p class="faq-a">はい。当日作ったものは、すべてあなたのものです。友だちに見せても、使い続けても、自由にしてください。</p>
+    <div class="faq-item reveal-up" id="q08">
+      <div class="faq-q"><span class="qno">Q08</span>作ったアプリは持ち帰れる？</div>
+      <p class="faq-a">はい、すべてあなたのものです。見せても使い続けても自由にしてください。</p>
     </div>
   </div>
 </section>
 
-<section class="sec">
-  <p class="sec-meta reveal-up">C — 参加・申し込み</p>
+<section class="sec" style="padding-top:clamp(20px,3vw,44px)">
+  <p class="sec-meta reveal-up">D — 条件・申し込み</p>
   <div class="faq-cat">
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q09</span>どうやって申し込みますか？</div>
-      <p class="faq-a">公式LINEに「気になる」とだけ送ってください。それだけで大丈夫です。難しい手続きはありません。</p>
+    <div class="faq-item reveal-up" id="q04">
+      <div class="faq-q"><span class="qno">Q04</span>広島の大学生以外は参加できない？</div>
+      <p class="faq-a">基本は広島の大学生が対象です。気になる方はまずLINEで相談してください。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q10</span>LINEに友だち追加するだけで、自動的に参加になりますか？</div>
-      <p class="faq-a">なりません。LINE友だち追加は「情報を受け取るための登録」です。参加の意思は、LINEで一言送ってもらえれば確認できます。</p>
+    <div class="faq-item reveal-up" id="q09">
+      <div class="faq-q"><span class="qno">Q09</span>どうやって申し込む？</div>
+      <p class="faq-a">公式LINEに「気になる」とだけ送ってください。それだけで大丈夫です。</p>
     </div>
-    <div class="faq-item reveal-up">
-      <div class="faq-q"><span class="qno">Q11</span>毎回参加しないといけませんか？</div>
-      <p class="faq-a">行ける回だけで大丈夫です。毎回来なくても、ゆるく続けられます。質問があればLINEでどうぞ。</p>
+    <div class="faq-item reveal-up" id="q10">
+      <div class="faq-q"><span class="qno">Q10</span>友だち追加だけで参加になる？</div>
+      <p class="faq-a">なりません。友だち追加は情報を受け取る登録だけ。参加はLINEで一言どうぞ。</p>
+    </div>
+    <div class="faq-item reveal-up" id="q11">
+      <div class="faq-q"><span class="qno">Q11</span>毎回参加しないとダメ？</div>
+      <p class="faq-a">行ける回だけで大丈夫。毎回来なくても、ゆるく続けられます。</p>
     </div>
   </div>
 </section>
@@ -144,6 +162,6 @@
   </div>
 </footer>
 
-<script src="assets/hlab-common.js?v=2"></script>
+<script src="assets/hlab-common.js?v=3"></script>
 </body>
 </html>

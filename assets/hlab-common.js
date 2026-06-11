@@ -48,6 +48,19 @@
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(function(t){ lenis.raf(t*1000); });
       gsap.ticker.lagSmoothing(0);
+      window.__lenis = lenis;
+    }
+
+    /* ウォーターマークの低速パララックス（scrubは主役1つだけの原則の範囲内・極小移動量） */
+    document.querySelectorAll('.watermark').forEach(function(wm){
+      gsap.to(wm, { y:-40, ease:'none', scrollTrigger:{ trigger:wm.parentElement, start:'top bottom', end:'bottom top', scrub:1.2 } });
+    });
+
+    /* 主催者写真：ビューイン時に微スケール（1回だけ・上質に） */
+    var hp = document.querySelector('.host-photo--lg');
+    if(hp){
+      gsap.fromTo(hp, { scale:1.04 }, { scale:1, duration:.9, ease:'power2.out',
+        scrollTrigger:{ trigger:hp, start:'top 80%', once:true } });
     }
 
     ScrollTrigger.batch('.reveal-up', {
@@ -66,4 +79,15 @@
   } else {
     document.querySelectorAll('.reveal-up').forEach(function(el){ el.style.opacity='1'; el.style.transform='none'; });
   }
+
+  /* FAQ質問インデックス：アンカーへスムーススクロール（Lenisがあれば任せる） */
+  document.querySelectorAll('.qi-item').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var el = document.querySelector(a.getAttribute('href'));
+      if(!el) return;
+      e.preventDefault();
+      if(window.__lenis){ window.__lenis.scrollTo(el, { offset:-90 }); }
+      else { el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    });
+  });
 })();
