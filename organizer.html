@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>運営について — HIROSHIMA AI LAB</title>
+<meta name="description" content="HIROSHIMA AI LABの運営について。主催の鴨川虹輝と、協力の日本AI開発センター株式会社（JADC）を紹介します。">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="assets/hlab-common.css">
+</head>
+<body>
+<div class="livinglight" aria-hidden="true">
+  <span class="ll-blob a"></span><span class="ll-blob b"></span><span class="ll-hex" id="llHex"></span>
+</div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+<header class="site-header site-header--static">
+  <div class="sh-inner">
+    <a class="sh-logo" href="index.html">HIROSHIMA <span class="ai">AI</span> LAB</a>
+    <nav class="sh-nav" aria-label="サイト内">
+      <a class="sh-link" href="index.html">TOP</a>
+      <a class="sh-link" href="about.html">この場所について</a>
+      <a class="sh-link" href="faq.html">FAQ</a>
+      <a class="sh-link is-current" href="organizer.html">運営</a>
+    </nav>
+    <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="メニュー"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<nav class="nav-overlay" aria-label="メニュー">
+  <a class="no-link" href="index.html"><span class="no-num">01</span>TOP</a>
+  <a class="no-link" href="about.html"><span class="no-num">02</span>この場所について</a>
+  <a class="no-link" href="faq.html"><span class="no-num">03</span>FAQ</a>
+  <a class="no-link" href="organizer.html"><span class="no-num">04</span>運営</a>
+  <a class="no-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+  <p class="no-meta">VOL.01 — 2026.6 後半 開催予定</p>
+</nav>
+
+<section class="page-hero">
+  <p class="ph-label">04 — ORGANIZER</p>
+  <h1 class="ph-title">運営について</h1>
+  <p class="ph-lead">この場所を、つくっている人たち。</p>
+</section>
+
+<section class="sec">
+  <p class="sec-meta reveal-up">A — 主催</p>
+  <div class="profile reveal-up">
+    <img class="profile-photo" src="assets/host-koki.webp" alt="主催 鴨川虹輝" loading="lazy" decoding="async" width="480" height="480">
+    <div>
+      <span class="profile-name">鴨川 虹輝<span class="profile-kana">かもがわ こうき</span></span>
+      <p>大学4年生。2年間の休学中に、1年目はアパレル、2年目はAI導入支援（DX）の事業を経験。東京から、事業の立ち上げメンバーとして1年間のインターンで広島へ。</p>
+      <p>「広島の学生こそ、AIで一番おもしろいことができる」——そう思って、この場をはじめました。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <p class="sec-meta reveal-up">B — 協力</p>
+  <div class="org-card reveal-up">
+    <a href="https://jadc.tech/" target="_blank" rel="noopener" aria-label="日本AI開発センター株式会社 公式サイト">
+      <img src="assets/jadc-logo.webp" alt="JADC 日本AI開発センター株式会社" loading="lazy" decoding="async" width="520" height="160">
+    </a>
+    <p><b>日本AI開発センター株式会社（JADC）</b><br>
+    島根県出雲市を拠点に、生成AI導入研修・AIエージェント開発を手がけるAI開発会社。
+    HIROSHIMA AI LABは、JADCの協力で運営しています。<br>
+    <a href="https://jadc.tech/" target="_blank" rel="noopener">公式サイト: jadc.tech →</a></p>
+  </div>
+</section>
+
+<section class="sec" style="padding-bottom:clamp(80px,12vw,160px)">
+  <p class="sec-meta reveal-up">C — お問い合わせ</p>
+  <h2 class="big reveal-up">お問い合わせは、<em>LINE</em>から。</h2>
+  <p class="sec-lead reveal-up">参加の申し込みも、質問も、すべてLINEからどうぞ。「気になる」とだけ送ってもらえれば、こちらから返信します。</p>
+  <p class="reveal-up" style="margin-top:clamp(28px,4vw,44px)">
+    <a class="cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く <span class="arrow">→</span></a>
+  </p>
+  <a class="more-link reveal-up" href="index.html">→ TOPへ戻る</a>
+</section>
+
+<footer class="site-footer">
+  <div class="sf-inner">
+    <div class="sf-top">
+      <div class="sf-brand">HIROSHIMA AI LAB<small>広島の大学生の、作る遊び場。</small></div>
+      <nav class="sf-nav" aria-label="フッター">
+        <a href="index.html">TOP</a>
+        <a href="about.html">この場所について</a>
+        <a href="faq.html">FAQ</a>
+        <a href="organizer.html">運営</a>
+      </nav>
+      <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    </div>
+    <div class="sf-bottom">
+      <span>協力 — 日本AI開発センター株式会社</span>
+      <span>VOL.01 — 2026</span>
+      <span>© 2026 HIROSHIMA AI LAB</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/hlab-common.js"></script>
+</body>
+</html>

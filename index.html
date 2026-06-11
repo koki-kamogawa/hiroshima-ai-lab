@@ -623,16 +623,8 @@
   }
   .join-note b{ color:var(--ink2); font-weight:700; }
 
-  /* フッター */
-  .site-footer{
-    position:relative; z-index:2;
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
-    padding:clamp(34px,5vw,56px) clamp(20px,5vw,80px);
-    border-top:1px solid var(--line);
-    font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.16em;
-    text-transform:uppercase; color:var(--ink-meta);
-  }
-  .site-footer .ft-brand{ color:var(--ink2); font-weight:700; }
+  /* フッター（HP化でハブ型へ。定義は<style>末尾の「フッターハブ」ブロック） */
+  .site-footer{ position:relative; z-index:2; border-top:1px solid var(--line); }
 
   /* ───────────────── レスポンシブ（スマホ最優先） ───────────────── */
   @media (max-width:760px){
@@ -737,10 +729,96 @@
     .js .reveal-up{ opacity:1 !important; transform:none !important; }
     .sec{ transition:none; }
   }
+  /* ═══════ HP化（design-spec-hp.md）: ヘッダー/オーバーレイ/フッターハブ/FAQ抜粋 ═══════
+     注: 同じ部品定義が assets/hlab-common.css（下層用）にもある。変える時は両方揃えること */
+  .site-header{
+    position:fixed; top:0; left:0; right:0; z-index:80;   /* オーバーレイ(70)より上＝開いた時も×が押せる */
+    background:rgba(250,248,245,.78);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(20,20,26,.08);
+    opacity:0; transform:translateY(-100%); pointer-events:none;   /* トップ=FV内では完全非表示（FV不可侵） */
+    transition:opacity .4s var(--ease-out), transform .4s var(--ease-out);
+  }
+  .site-header.is-shown{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .sh-inner{ max-width:1180px; margin:0 auto; height:64px; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:0 20px; }
+  .sh-logo{ font-family:"Clash Display","General Sans",sans-serif; font-weight:600; font-size:clamp(13px,1.3vw,18px); letter-spacing:-.01em; color:var(--ink); text-decoration:none; white-space:nowrap; }
+  .sh-logo .lg-ai{ display:inline-block; color:var(--prism-b); background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 50%,var(--prism-c)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .sh-nav{ display:flex; align-items:center; gap:clamp(18px,2.4vw,34px); }
+  .sh-link{ position:relative; font-size:14px; font-weight:500; color:var(--ink-soft2); text-decoration:none; padding:4px 0; transition:color .3s; }
+  .sh-link::after{ content:""; position:absolute; left:0; bottom:0; height:1px; width:0; background:linear-gradient(90deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c)); transition:width .3s var(--ease-out); }
+  .sh-link:hover{ color:var(--ink2); } .sh-link:hover::after{ width:100%; }
+  .sh-link.is-current{ color:var(--ink2); } .sh-link.is-current::after{ width:100%; }
+  .sh-cta{ display:inline-flex; align-items:center; gap:.5em; font-family:"General Sans","Noto Sans JP",sans-serif; font-weight:600; font-size:13px; color:#fff; text-decoration:none; padding:10px 20px; border-radius:100px; background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c)); box-shadow:0 4px 16px rgba(124,92,255,.22); transition:transform .4s var(--ease-out); white-space:nowrap; }
+  .sh-cta:hover{ transform:translateY(-2px); }
+  .nav-toggle{ display:none; width:44px; height:44px; border:0; background:none; cursor:pointer; flex-direction:column; align-items:center; justify-content:center; gap:6px; z-index:71; }
+  .nav-toggle span{ display:block; width:22px; height:2px; background:var(--ink2); transition:transform .3s var(--ease-out), opacity .3s; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
+  .nav-overlay{ position:fixed; inset:0; z-index:70; background:var(--bg); transform:translateY(-100%); transition:transform .45s var(--ease-out); display:flex; flex-direction:column; justify-content:center; padding:80px 28px 40px; overflow:hidden; }
+  .nav-overlay.is-open{ transform:translateY(0); }
+  .nav-overlay::after{ content:""; position:absolute; right:-14vw; bottom:-10vh; width:64vw; aspect-ratio:1; opacity:.5; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 3 L91 26.5 L91 73.5 L50 97 L9 73.5 L9 26.5 Z' fill='none' stroke='%237C5CFF' stroke-opacity='.14' stroke-width='.9' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain; }
+  .no-link{ display:flex; align-items:baseline; gap:14px; font-family:"Clash Display","General Sans","Noto Sans JP",sans-serif; font-weight:600; font-size:clamp(28px,8vw,40px); color:var(--ink2); text-decoration:none; padding:14px 0; letter-spacing:-.01em; opacity:0; transform:translateY(16px); transition:opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+  .nav-overlay.is-open .no-link{ opacity:1; transform:none; }
+  .nav-overlay.is-open .no-link:nth-child(2){ transition-delay:.06s; }
+  .nav-overlay.is-open .no-link:nth-child(3){ transition-delay:.12s; }
+  .nav-overlay.is-open .no-link:nth-child(4){ transition-delay:.18s; }
+  .no-link .no-num{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:.18em; color:var(--ink-meta); }
+  .no-cta{ margin-top:32px; display:inline-flex; align-items:center; justify-content:center; gap:.7em; font-family:"General Sans","Noto Sans JP",sans-serif; font-weight:600; font-size:16px; color:#fff; text-decoration:none; padding:17px 32px; border-radius:100px; width:100%; background:linear-gradient(110deg,var(--prism-a),var(--prism-b) 55%,var(--prism-c)); box-shadow:0 8px 30px rgba(124,92,255,.3); }
+  .no-meta{ margin-top:14px; font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.18em; color:var(--ink-meta); text-transform:uppercase; text-align:center; }
+  @media (max-width:760px){ .sh-inner{ height:56px; } .sh-nav,.sh-cta{ display:none; } .nav-toggle{ display:flex; } }
+  @media (min-width:761px){ .nav-overlay{ display:none; } }
+
+  /* 下層への小リンク（mono＋矢印） */
+  .more-link{ display:inline-flex; align-items:center; gap:.6em; margin-top:clamp(20px,2.6vw,32px); font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.12em; color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(124,92,255,.3); padding-bottom:2px; transition:border-color .3s; }
+  .more-link:hover{ border-bottom-color:var(--accent); }
+
+  /* FAQ抜粋（トップ用・3問だけ） */
+  .faq-item{ padding:clamp(22px,3vw,34px) 0; border-bottom:1px solid rgba(20,20,26,.08); max-width:760px; }
+  .faq-item:first-of-type{ border-top:1px solid rgba(20,20,26,.08); }
+  .faq-q{ display:flex; gap:14px; align-items:baseline; font-weight:600; color:var(--ink2); font-size:clamp(17px,2vw,20px); line-height:1.6; }
+  .faq-q .qno{ flex:none; font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.1em; color:var(--accent); }
+  .faq-a{ margin-top:12px; padding-left:calc(13px + 14px + 14px); font-size:clamp(14px,1.5vw,16px); line-height:1.95; color:var(--ink-soft2); }
+  @media (max-width:760px){ .faq-a{ padding-left:0; } }
+
+  /* フッターハブ（共通フッターと同構造） */
+  .site-footer{ display:block; padding:0; background:var(--bg2); }
+  .site-footer .sf-inner{ padding:clamp(40px,6vw,72px) clamp(20px,5vw,80px); }
+  .sf-top{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:clamp(24px,4vw,48px); align-items:flex-start; }
+  .sf-brand{ font-family:"Space Mono",monospace; font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink2); font-weight:700; }
+  .sf-brand small{ display:block; margin-top:8px; font-family:"Noto Sans JP",sans-serif; font-size:12px; letter-spacing:.05em; color:var(--ink-meta); text-transform:none; font-weight:400; }
+  .sf-nav{ display:flex; flex-direction:column; gap:10px; }
+  .sf-nav a{ font-size:14px; color:var(--ink-soft2); text-decoration:none; transition:color .3s; }
+  .sf-nav a:hover{ color:var(--ink2); }
+  .sf-bottom{ margin-top:clamp(28px,4vw,44px); padding-top:clamp(16px,2vw,24px); border-top:1px solid rgba(20,20,26,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-meta); }
+  @media (min-width:761px){ .site-footer .sf-inner{ padding-left:max(64px, calc((100% - 1180px)/2)); padding-right:max(64px, calc((100% - 1180px)/2)); } }
 </style>
 </head>
 
 <body>
+<!-- グローバルヘッダー（FVを抜けたら出現・FV不可侵） -->
+<header class="site-header" id="siteHeader">
+  <div class="sh-inner">
+    <a class="sh-logo" href="index.html">HIROSHIMA <span class="lg-ai">AI</span> LAB</a>
+    <nav class="sh-nav" aria-label="サイト内">
+      <a class="sh-link is-current" href="index.html">TOP</a>
+      <a class="sh-link" href="about.html">この場所について</a>
+      <a class="sh-link" href="faq.html">FAQ</a>
+      <a class="sh-link" href="organizer.html">運営</a>
+    </nav>
+    <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="メニュー"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<nav class="nav-overlay" aria-label="メニュー">
+  <a class="no-link" href="index.html"><span class="no-num">01</span>TOP</a>
+  <a class="no-link" href="about.html"><span class="no-num">02</span>この場所について</a>
+  <a class="no-link" href="faq.html"><span class="no-num">03</span>FAQ</a>
+  <a class="no-link" href="organizer.html"><span class="no-num">04</span>運営</a>
+  <a class="no-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+  <p class="no-meta">VOL.01 — 2026.6 後半 開催予定</p>
+</nav>
+
 <!-- 背景の生きた光（FV以下・コンセプト「ガラスから漏れた光が白い紙を泳ぐ」） -->
 <div class="livinglight" aria-hidden="true">
   <span class="ll-blob a"></span>
@@ -840,6 +918,7 @@
     コードは書きません。日本語でAIに話しかけるだけ。広島の大学生のための、小さな部活のような場所です。<br>
     つくるのは、誰かに売るサービスじゃなくて、<b>自分がほしいもの</b>。
   </p>
+  <a class="more-link reveal-up" href="about.html">→ この場所について詳しく</a>
 </section>
 
 <!-- ══ 03 作ったものの例（generic回避・具体例） ══ -->
@@ -893,11 +972,33 @@
       <div><h3>見せる</h3><p>最後に、作ったものを順番に見せ合う。<span class="note">完成しなくても大丈夫</span></p></div>
     </li>
   </ol>
+  <a class="more-link reveal-up" href="about.html">→ 当日の流れを詳しく</a>
+</section>
+
+<!-- ══ FAQ抜粋（不安を3つだけ先に潰す） ══ -->
+<section class="sec sec-faq" id="faq" data-zone="mint">
+  <p class="sec-meta reveal-up">04 — よくある質問</p>
+  <h2 class="big reveal-up">不安は、<em>先に</em>つぶしておく。</h2>
+  <div style="margin-top:clamp(36px,5vw,60px)">
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q</span>参加するのにお金はかかりますか？</div>
+      <p class="faq-a">かかりません。参加は無料です。これからも、ずっと無料でやるつもりです。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q</span>プログラミングの経験がなくても大丈夫ですか？</div>
+      <p class="faq-a">まったく問題ありません。日本語でAIに話しかけるだけで、アプリが作れます。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q</span>3時間で完成しなかったらどうなりますか？</div>
+      <p class="faq-a">完成しなくても、まったく問題ありません。「ここまで作った」を見せるだけで十分です。</p>
+    </div>
+  </div>
+  <a class="more-link reveal-up" href="faq.html">→ FAQをすべて見る</a>
 </section>
 
 <!-- ══ 05 参加する（暗転＝点灯／正直さ＋主催者の顔） ══ -->
 <section class="sec sec-join" id="join" data-zone="dark">
-  <p class="sec-meta light reveal-up">04 — 参加する</p>
+  <p class="sec-meta light reveal-up">05 — 参加する</p>
   <h2 class="join-title reveal-up">VOL.01、<br>もうすぐ<em class="glow">点灯</em>。</h2>
   <p class="sec-lead light reveal-up">第1回は<b>6月後半に開催予定</b>。広島の大学生なら、誰でも。参加は無料です。<br>まずはLINEで「気になる」とだけ送ってください。</p>
   <a class="cta cta-lg reveal-up" href="https://lin.ee/8MtP21C" id="cta-join" target="_blank" rel="noopener">
@@ -921,13 +1022,29 @@
   </a>
   <p class="coop-body">
     <b>日本AI開発センター株式会社</b>（島根県出雲市）— 生成AI導入研修・AIエージェント開発を手がけるAI開発会社。
-    HIROSHIMA AI LABはJADCの協力で運営しています。<a href="https://jadc.tech/" target="_blank" rel="noopener">公式サイト →</a>
+    HIROSHIMA AI LABはJADCの協力で運営しています。<a href="https://jadc.tech/" target="_blank" rel="noopener">公式サイト →</a><br>
+    <a class="more-link" href="organizer.html" style="margin-top:14px">→ 運営について</a>
   </p>
 </div>
 
 <footer class="site-footer" data-zone="dark">
-  <span class="ft-brand">HIROSHIMA AI LAB</span>
-  <span class="ft-meta">VOL.01 — 2026 ／ 広島の大学生の、作る遊び場。</span>
+  <div class="sf-inner">
+    <div class="sf-top">
+      <div class="sf-brand">HIROSHIMA AI LAB<small>広島の大学生の、作る遊び場。</small></div>
+      <nav class="sf-nav" aria-label="フッター">
+        <a href="index.html">TOP</a>
+        <a href="about.html">この場所について</a>
+        <a href="faq.html">FAQ</a>
+        <a href="organizer.html">運営</a>
+      </nav>
+      <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    </div>
+    <div class="sf-bottom">
+      <span>協力 — 日本AI開発センター株式会社</span>
+      <span>VOL.01 — 2026</span>
+      <span>© 2026 HIROSHIMA AI LAB</span>
+    </div>
+  </div>
 </footer>
 
 <!-- セクションIndex（kaonavi式の航路点。FV以外で点灯） -->
@@ -936,6 +1053,7 @@
   <a href="#intro" data-label="これは何"><span class="dn-dot"></span></a>
   <a href="#make"  data-label="作るもの"><span class="dn-dot"></span></a>
   <a href="#how"   data-label="当日の流れ"><span class="dn-dot"></span></a>
+  <a href="#faq"   data-label="よくある質問"><span class="dn-dot"></span></a>
   <a href="#join"  data-label="参加する"><span class="dn-dot"></span></a>
 </nav>
 
@@ -1160,6 +1278,36 @@
     addEventListener('resize', function(){ measure(); update(); }, {passive:true});
     addEventListener('load', function(){ measure(); update(); });
     measure(); update();
+  })();
+
+  /* ════════════ グローバルヘッダー：FVを抜けたら出現＋SPハンバーガー ════════════ */
+  (function(){
+    var header = document.getElementById('siteHeader');
+    if(header){
+      var shown = null;
+      var onS = function(){
+        var s = (window.scrollY || 0) > innerHeight * 0.85;
+        if(s !== shown){ shown = s; header.classList.toggle('is-shown', s); }
+      };
+      addEventListener('scroll', onS, {passive:true});
+      onS();
+    }
+    var toggle = document.querySelector('.nav-toggle');
+    var overlay = document.querySelector('.nav-overlay');
+    if(toggle && overlay){
+      toggle.addEventListener('click', function(){
+        var open = overlay.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+      overlay.querySelectorAll('a').forEach(function(a){
+        a.addEventListener('click', function(){
+          overlay.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded','false');
+          document.body.style.overflow = '';
+        });
+      });
+    }
   })();
 
   /* ════════════ MEMBERS：assets/members.json で点灯（公式LINE友だち数と夜間自動同期） ════════════ */

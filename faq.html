@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>よくある質問 — HIROSHIMA AI LAB</title>
+<meta name="description" content="HIROSHIMA AI LABのよくある質問。費用・経験・当日のこと・申し込み方法まで、ひとつずつ答えます。">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="assets/hlab-common.css">
+</head>
+<body>
+<div class="livinglight" aria-hidden="true">
+  <span class="ll-blob a"></span><span class="ll-blob b"></span><span class="ll-hex" id="llHex"></span>
+</div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+<header class="site-header site-header--static">
+  <div class="sh-inner">
+    <a class="sh-logo" href="index.html">HIROSHIMA <span class="ai">AI</span> LAB</a>
+    <nav class="sh-nav" aria-label="サイト内">
+      <a class="sh-link" href="index.html">TOP</a>
+      <a class="sh-link" href="about.html">この場所について</a>
+      <a class="sh-link is-current" href="faq.html">FAQ</a>
+      <a class="sh-link" href="organizer.html">運営</a>
+    </nav>
+    <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="メニュー"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<nav class="nav-overlay" aria-label="メニュー">
+  <a class="no-link" href="index.html"><span class="no-num">01</span>TOP</a>
+  <a class="no-link" href="about.html"><span class="no-num">02</span>この場所について</a>
+  <a class="no-link" href="faq.html"><span class="no-num">03</span>FAQ</a>
+  <a class="no-link" href="organizer.html"><span class="no-num">04</span>運営</a>
+  <a class="no-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+  <p class="no-meta">VOL.01 — 2026.6 後半 開催予定</p>
+</nav>
+
+<section class="page-hero">
+  <p class="ph-label">03 — FAQ</p>
+  <h1 class="ph-title">よくある質問</h1>
+  <p class="ph-lead">不安は、先に全部つぶしておく。</p>
+</section>
+
+<section class="sec">
+  <p class="sec-meta reveal-up">A — 費用・条件</p>
+  <div class="faq-cat">
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q01</span>参加するのにお金はかかりますか？</div>
+      <p class="faq-a">かかりません。参加は無料です。これからも、ずっと無料でやるつもりです。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q02</span>プログラミングの経験がなくても大丈夫ですか？</div>
+      <p class="faq-a">まったく問題ありません。コードは書きません。日本語でAIに話しかけるだけで、アプリが作れます。「プログラミングって何？」という状態でも、ちゃんと楽しめます。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q03</span>広島の大学生以外は参加できませんか？</div>
+      <p class="faq-a">基本的には広島の大学生を対象にしています。気になる方はまずLINEで相談してください。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <p class="sec-meta reveal-up">B — 当日のこと</p>
+  <div class="faq-cat">
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q04</span>当日、作りたいものが決まっていなくてもいいですか？</div>
+      <p class="faq-a">大丈夫です。その日に「作ってみようかな」と思ったものを、その場で決めてもOKです。他の参加者のアイデアを聞いてから決める人もいます。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q05</span>3時間で完成しなかったらどうなりますか？</div>
+      <p class="faq-a">完成しなくても、まったく問題ありません。「ここまで作った」を見せるだけで十分です。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q06</span>途中参加・途中退出はできますか？</div>
+      <p class="faq-a">途中からでも、途中で抜けても大丈夫です。詳しい時間の都合は、LINEで気軽に相談してください。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q07</span>広島市内に来られない回は、どうなりますか？</div>
+      <p class="faq-a">オンラインでの参加ができます。来られない日があっても、参加し続けられます。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q08</span>作ったアプリは、自分で持ち帰れますか？</div>
+      <p class="faq-a">はい。当日作ったものは、すべてあなたのものです。友だちに見せても、使い続けても、自由にしてください。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <p class="sec-meta reveal-up">C — 参加・申し込み</p>
+  <div class="faq-cat">
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q09</span>どうやって申し込みますか？</div>
+      <p class="faq-a">公式LINEに「気になる」とだけ送ってください。それだけで大丈夫です。難しい手続きはありません。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q10</span>LINEに友だち追加するだけで、自動的に参加になりますか？</div>
+      <p class="faq-a">なりません。LINE友だち追加は「情報を受け取るための登録」です。参加の意思は、LINEで一言送ってもらえれば確認できます。</p>
+    </div>
+    <div class="faq-item reveal-up">
+      <div class="faq-q"><span class="qno">Q11</span>毎回参加しないといけませんか？</div>
+      <p class="faq-a">行ける回だけで大丈夫です。毎回来なくても、ゆるく続けられます。質問があればLINEでどうぞ。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-bottom:clamp(80px,12vw,160px)">
+  <h2 class="big reveal-up">まだ不安が残るなら、<br><em>直接</em>聞いてください。</h2>
+  <p class="sec-lead reveal-up">その他の質問は、公式LINEで気軽にどうぞ。「気になる」とだけ送っても大丈夫です。</p>
+  <p class="reveal-up" style="margin-top:clamp(28px,4vw,44px)">
+    <a class="cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで直接聞く <span class="arrow">→</span></a>
+  </p>
+  <a class="more-link reveal-up" href="about.html">→ この場所について詳しく</a>
+</section>
+
+<footer class="site-footer">
+  <div class="sf-inner">
+    <div class="sf-top">
+      <div class="sf-brand">HIROSHIMA AI LAB<small>広島の大学生の、作る遊び場。</small></div>
+      <nav class="sf-nav" aria-label="フッター">
+        <a href="index.html">TOP</a>
+        <a href="about.html">この場所について</a>
+        <a href="faq.html">FAQ</a>
+        <a href="organizer.html">運営</a>
+      </nav>
+      <a class="sh-cta" href="https://lin.ee/8MtP21C" target="_blank" rel="noopener">LINEで話を聞く →</a>
+    </div>
+    <div class="sf-bottom">
+      <span>協力 — 日本AI開発センター株式会社</span>
+      <span>VOL.01 — 2026</span>
+      <span>© 2026 HIROSHIMA AI LAB</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/hlab-common.js"></script>
+</body>
+</html>
