@@ -1,0 +1,62 @@
+/* ============================================================
+   jp-typography.css — 日本語が美しく折り返すための組版レイヤー
+   ------------------------------------------------------------
+   解決する3つの汚さ:
+     1. 意味の区切りで改行されない（幅で機械的に切れる）
+     2. 行末・最終行に1文字だけ残る（泣き別れ / orphan）
+     3. 約物（。、）」）が行頭に来る・括弧が行末に来る（禁則）
+   使い方: 全成果物の <head> でこの1枚を読む/埋め込むだけ。
+   PDF変換(scripts/html-to-pdf.js)は自動でこの規則を注入する。
+   ※ word-break:auto-phrase はChrome/Edge系で文節改行。
+     Safari/Firefoxは未対応だが、その2層(禁則・1文字残り)は効く。
+     iPhone Safariでも文節改行を保証したい客先HTMLは
+     scripts/jp-wrap.js (BudouX) を併用する。
+   ============================================================ */
+
+:where(html) {
+  /* 禁則を厳格に。。、）」が行頭、（「が行末に来ないようにする */
+  line-break: strict;
+  /* 英単語/URL/長い英数字が枠を突き破らず適切に折り返す */
+  overflow-wrap: break-word;
+  /* 行頭の約物（開き括弧など）の余分な空きを詰める */
+  text-spacing-trim: trim-start;
+}
+
+/* --- 本文系: 文節で折り返し + 1文字残りを防ぐ --- */
+:where(
+  p, li, dd, dt, td, th, caption, figcaption, blockquote,
+  .lead, .sub, .desc, .body, .text, .ex, .take, .oneline, .ans, .q
+) {
+  word-break: auto-phrase;  /* 文節（意味）の区切りで改行（Chromium系） */
+  text-wrap: pretty;        /* 最終行に1文字だけ残るのを防ぐ */
+}
+
+/* --- 見出し系: 各行の長さを均し、孤立を防ぐ --- */
+:where(
+  h1, h2, h3, h4, h5, h6,
+  .title, .heading, .hero, .kicker, .h2sub, .lead-title
+) {
+  word-break: auto-phrase;
+  text-wrap: balance;       /* 見出しは行のバランスを取る（短い行を作らない） */
+}
+
+/* --- BudouX で前処理した要素（全ブラウザ対応の砦） ---
+   scripts/jp-wrap.js が付与する .jp-wrap / budoux出力spanと整合させる */
+:where(.jp-wrap), :where([data-budoux]) {
+  word-break: keep-all;     /* 文節の途中で切らない */
+  overflow-wrap: anywhere;  /* ただし1文節が長すぎる時はあふれず折る */
+  text-wrap: pretty;
+}
+
+/* --- 手動制御ユーティリティ --- */
+.nowrap   { white-space: nowrap; }            /* 例:「30,000円」を絶対切らない */
+.keep     { word-break: keep-all; overflow-wrap: anywhere; }
+.balance  { text-wrap: balance; }
+.pretty   { text-wrap: pretty; }
+
+/* 印刷(PDF)でも同じ組版を保証 */
+@media print {
+  :where(p, li, h1, h2, h3, h4, h5, h6, .lead, .sub) {
+    text-wrap: pretty;
+  }
+}
