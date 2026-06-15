@@ -819,6 +819,8 @@
   .sf-nav a:hover{ color:var(--ink2); }
   .sf-bottom{ margin-top:clamp(28px,4vw,44px); padding-top:clamp(16px,2vw,24px); border-top:1px solid rgba(20,20,26,.08); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-meta); }
   @media (min-width:761px){ .site-footer .sf-inner{ padding-left:max(64px, calc((100% - 1180px)/2)); padding-right:max(64px, calc((100% - 1180px)/2)); } }
+  /* sec-how見出し「集まって、作って、見せる。」: どの幅でも必ず1行（はみ出さないサイズに連動） */
+  .sec-how .big{ white-space:nowrap; font-size:clamp(20px,6.1vw,52px); max-width:none; }
 </style>
 <link rel="stylesheet" href="assets/jp-typography.css">
 </head>
@@ -989,7 +991,7 @@
 <!-- ══ 04 当日の流れ（具体＋正直） ══ -->
 <section class="sec sec-how" id="how" data-zone="mint">
   <p class="sec-meta reveal-up">03 — 当日の​流れ</p>
-  <h2 class="big reveal-up">集まって、<br>作って、<br><em>見せる。</em></h2>
+  <h2 class="big reveal-up">集まって、作って、<em>見せる。</em></h2>
   <ol class="steps">
     <li class="step reveal-up">
       <span class="step-no">01</span>
