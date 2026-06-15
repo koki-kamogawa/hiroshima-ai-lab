@@ -482,6 +482,16 @@
   }
   .host-name .kana{ font-weight:500; font-size:.82em; color:var(--ink-meta); margin-left:.6em; }
 
+  /* 主催（FV直下・顔を先に見せる） */
+  .sec-host-lead{ padding-top:clamp(36px,5vw,64px); padding-bottom:clamp(8px,2vw,20px); }
+  .host--lead{ max-width:680px; align-items:center; }
+  .host--lead .host-eyebrow{
+    display:block; margin-bottom:6px;
+    font-family:"Space Mono",monospace; font-size:clamp(10px,1vw,12px);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--ink-meta);
+  }
+  .host--lead p{ font-size:clamp(13px,1.35vw,15px); line-height:1.85; color:var(--ink-soft2); }
+
   /* 協力（運営の実在証明・フッター直前） */
   .coop{
     position:relative; z-index:2;
@@ -902,6 +912,15 @@
 
 </main>
 
+<!-- ══ 主催（FV直下・顔を先に見せる＝信頼の本丸） ══ -->
+<section class="sec sec-host-lead" data-zone="cream">
+  <div class="host host--lead reveal-up">
+    <img class="host-photo" src="assets/host-koki.webp" alt="主催 鴨川虹輝" loading="lazy" decoding="async" width="480" height="480">
+    <p><span class="host-eyebrow">主催</span><span class="host-name">鴨川 虹輝<span class="kana">かもがわ こうき</span></span>
+    早稲田大学4年生・休学中。1年目はアパレル、2年目はAI導入支援（DX）の事業を経験。東京から、事業の立ち上げメンバーとして1年間のインターンで広島へ。「広島の学生こそ、AIで一番おもしろいことができる」——そう思って、この場をはじめました。</p>
+  </div>
+</section>
+
 <!-- ══ 定義ストリップ（「結局何する場所か」を3秒で） ══ -->
 <section class="sec sec-def" id="about" data-zone="cream">
   <p class="sec-meta reveal-up">HIROSHIMA AI LAB とは</p>
@@ -1022,7 +1041,7 @@
     <div class="host">
       <img class="host-photo" src="assets/host-koki.webp" alt="主催 鴨川虹輝" loading="lazy" decoding="async" width="480" height="480">
       <p><span class="host-name">主催：鴨川 虹輝<span class="kana">かもがわ こうき</span></span>
-      大学4年生。2年間の休学中に、1年目はアパレル、2年目はAI導入支援（DX）の事業を経験。東京から、事業の立ち上げメンバーとして1年間のインターンで広島へ。「広島の学生こそ、AIで一番おもしろいことができる」——そう思って、この場をはじめました。</p>
+      早稲田大学4年生。2年間の休学中に、1年目はアパレル、2年目はAI導入支援（DX）の事業を経験。東京から、事業の立ち上げメンバーとして1年間のインターンで広島へ。「広島の学生こそ、AIで一番おもしろいことができる」——そう思って、この場をはじめました。</p>
     </div>
   </div>
 </section>
